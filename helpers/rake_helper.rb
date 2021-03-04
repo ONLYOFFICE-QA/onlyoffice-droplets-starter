@@ -3,11 +3,6 @@
 # Class represent rake helper methods
 class RakeHelper
   class << self
-    def input(var = nil)
-      p var unless var.nil?
-      p @init_api.class
-    end
-
     attr_accessor :init_api
 
     private
