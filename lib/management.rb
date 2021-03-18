@@ -3,5 +3,5 @@
 require 'bundler/setup'
 require 'onlyoffice_digitalocean_wrapper'
 require 'droplet_kit'
-require './data/static_data'
-require './helpers/rake_helper'
+require './lib/data/static_data'
+require './lib/helpers/rake_helper'

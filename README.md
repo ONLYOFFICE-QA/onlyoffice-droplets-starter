@@ -19,7 +19,7 @@ After add digitalocean API token in file:
 It is necessary to fill in the values of variables in the file
 
 ```bash
-./data/static_data.rb
+./lib/data/static_data.rb
 ```
 
 * PROJECT_NAME: __If you have project add droplet__
@@ -32,7 +32,7 @@ It is necessary to fill in the values of variables in the file
 Finally add the documentserver version to the script:
 
 ```bash
-./script.sh
+./lib/bash_script/script.sh
 ```
 
 ## Usage

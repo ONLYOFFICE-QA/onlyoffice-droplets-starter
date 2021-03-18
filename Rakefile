@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'management'
+require_relative 'lib/management'
 
 def init_api
   @init_api ||= OnlyofficeDigitaloceanWrapper::DigitalOceanWrapper.new
@@ -17,7 +17,7 @@ task :create_droplets, :container_count do |_t, args|
     RakeHelper.create_droplet(droplet_name)
     RakeHelper.include_in_the_project(droplet_name)
     ip = @init_api.get_droplet_ip_by_name(droplet_name)
-    `cat ./script.sh | ssh -o StrictHostKeyChecking=no root@#{ip} /bin/bash`
+    `cat ./lib/bash_scripts/script.sh | ssh -o StrictHostKeyChecking=no root@#{ip} /bin/bash`
     puts('Run one container')
     sleep(5) # Timeout between commands to not be banned by ssh
   end
