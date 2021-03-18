@@ -34,7 +34,7 @@ class RakeHelper
       loaders = []
       all_droplets = @init_api.client.droplets.all
       all_droplets.each do |droplet|
-        loaders << droplet.name if droplet.name.start_with?(StaticData::LOADER_PATTERN)
+        loaders << droplet.name if droplet.name.start_with?(StaticData::DROPLET_NAME_PATTERN)
       end
       loaders
     end
@@ -44,10 +44,10 @@ class RakeHelper
     # @return [String] next name of loader
     def next_loader_name
       loaders = loaders_names
-      return "#{StaticData::LOADER_PATTERN}-0" if loaders.empty?
+      return "#{StaticData::DROPLET_NAME_PATTERN}-0" if loaders.empty?
 
       loaders_digits = loaders.map { |x| x[/\d+/].to_i }
-      "#{StaticData::LOADER_PATTERN}-#{loaders_digits.max + 1}"
+      "#{StaticData::DROPLET_NAME_PATTERN}-#{loaders_digits.max + 1}"
     end
 
     def create_droplet(loader_name)

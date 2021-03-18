@@ -3,7 +3,7 @@
 # class with some constants and static data
 class StaticData
   PROJECT_NAME = ''
-  LOADER_PATTERN = 'droplets-runner'
+  DROPLET_NAME_PATTERN = 'droplets-runner'
 
   DROPLET_REGION = 'nyc3'
   DROPLET_IMAGE = 'docker-20-04'
