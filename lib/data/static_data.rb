@@ -20,4 +20,8 @@ class StaticData
 
       File.read("#{Dir.home}/.do/ssh_key_id").delete("\n")
   end
+
+  PALLADIUM_TOKEN_PATH = "#{Dir.home}/.palladium/token"
+  PRIVATE_KEY_PATH = "#{Dir.home}/.s3/private_key"
+  KEY_PATH = "#{Dir.home}/.s3/key"
 end
