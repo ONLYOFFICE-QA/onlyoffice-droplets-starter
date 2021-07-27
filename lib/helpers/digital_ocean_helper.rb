@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Class represent rake helper methods
-class RakeHelper
+class DigitalOceanHelper
   class << self
     attr_accessor :init_api
 
