@@ -2,7 +2,7 @@
 
 # Class represent rake helper methods
 class DigitalOceanHelper
-  attr_accessor :do_api
+  attr_writer :do_api
 
   private
 
