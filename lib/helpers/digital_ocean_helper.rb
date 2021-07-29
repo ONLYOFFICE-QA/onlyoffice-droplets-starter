@@ -2,7 +2,11 @@
 
 # Class represent rake helper methods
 class DigitalOceanHelper
-  attr_writer :do_api
+  attr_reader :do_api
+
+  def initialize(api = OnlyofficeDigitaloceanWrapper::DigitalOceanWrapper.new)
+    @do_api = api
+  end
 
   private
 
