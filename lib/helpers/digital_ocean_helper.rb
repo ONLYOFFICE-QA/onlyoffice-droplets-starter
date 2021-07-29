@@ -10,24 +10,6 @@ class DigitalOceanHelper
     @logger ||= Logger.new($stdout)
   end
 
-  def project_by_name(project_name)
-    @do_api.retry_exception do
-      projects = @do_api.client.projects.all
-      projects.find { |x| x.name == project_name }
-    end
-  end
-
-  def get_project_id_by_name(project_name)
-    project = project_by_name(project_name)
-    if project.nil?
-      logger.info("get_project_id_by_name(#{project_name}): not found any projects")
-      nil
-    else
-      logger.info("get_project_id_by_name(#{project_name}): #{project.id}")
-      project.id
-    end
-  end
-
   # @return [Array<String>] names of currently run loaders
   def loaders_names
     loaders = []
@@ -61,7 +43,7 @@ class DigitalOceanHelper
 
   def include_in_the_project(droplet_name)
     droplet_id = @do_api.get_droplet_id_by_name(droplet_name)
-    project_id = get_project_id_by_name(StaticData.get_project_name)
+    project_id = @do_api.get_project_id_by_name(StaticData.get_project_name)
     @do_api.client.projects.assign_resources(["do:droplet:#{droplet_id}"], id: project_id)
     logger.info("Droplet #{droplet_name} added by project #{StaticData.get_project_name}")
   end
