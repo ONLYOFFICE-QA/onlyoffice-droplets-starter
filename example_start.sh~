@@ -1,0 +1,12 @@
+#!/bin/bash
+
+IP=167.71.108.106
+docker_container=c94bf0396c43
+echo '$IP'
+echo $docker_container
+
+#echo sudo docker exec "$docker_container" sudo supervisorctl start ds:example \
+#| ssh -o StrictHostKeyChecking=no root@'$IP'
+
+#echo sudo docker exec "$docker_container" sudo sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf \
+#| ssh -o StrictHostKeyChecking=no root@'$IP'
