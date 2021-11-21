@@ -24,6 +24,10 @@ GEM
     faraday-net_http (2.0.1)
     ice_nine (0.11.2)
     kartograph (0.2.8)
+    multipart-post (2.1.1)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
+    net-ssh (6.1.0)
     net-telnet (0.2.0)
     onlyoffice_digitalocean_wrapper (0.8.0)
       droplet_kit (~> 3)
@@ -66,6 +70,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  net-sftp (~> 2.1, >= 2.1.2)
   onlyoffice_digitalocean_wrapper
   rake
   rubocop

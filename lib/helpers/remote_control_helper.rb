@@ -1,0 +1,93 @@
+# frozen_string_literal: true '
+
+require 'net/sftp'
+require 'logger'
+
+def logger
+  @logger = Logger.new($stdout)
+end
+
+def sftp(host, user, &block)
+  @sftp = Net::SFTP.start(host, user, &block)
+end
+
+# def ssh(host, user, &block)
+#   @ssh ||= Net::SSH.start(host, user, &block)
+# end
+
+# Describer
+class RemoteControlHelper
+
+  private
+
+  # @param [Object] sftp_object
+  # @param [Object] path
+  # @param [Object] file_name
+  # @return [TrueClass, FalseClass]
+  def remote_file_exist?(sftp_object, path, file_name)
+    @file_list.clear if nil?
+    @file_list = []
+    sftp_object.dir.foreach(path) do |entry|
+      @file_list << entry.name
+    end
+    @file_list.include?(file_name)
+  end
+
+  public
+
+  # @param [Object] host
+  # @param [Object] user
+  # @return [Net::SFTP::Session, nil]
+  def initialize_keys(host, user)
+    sftp(host, user) do |sftp|
+      StaticData::PATHS_LIST.map do |path|
+        sftp.mkdir! "/#{user}/#{path[:dir]}" unless remote_file_exist?(sftp, "/#{user}", path[:dir])
+        unless remote_file_exist?(sftp, "/#{user}/#{path[:dir]}", path[:file])
+          sftp.upload!("#{Dir.home}/#{path[:dir]}/#{path[:file]}",
+                       "/#{user}/#{path[:dir]}/#{path[:file]}")
+        end
+        logger.info "#{path[:dir]}/#{path[:file]} is written"
+      end
+    end
+  end
+
+  # @param [Object] host
+  # @param [Object] user
+  # @param [Object] script
+  # @return [Array, Net::SSH::Authentication]
+  def run_bash_script(host, user, script)
+    ssh(host, user) do |ssh|
+      request = execute_in_shell!(ssh, script)
+      logger.info "Script installed? #{request}"
+    end
+  end
+
+  # @param [Object] path
+  # @return [String]
+  def script(path)
+    File.read(path.to_s).to_s
+  end
+
+  # @param [Object] session
+  # @param [Object] commands
+  # @param [String] shell
+  # @return [Object]
+  def execute_in_shell!(session, commands, shell = 'bash')
+    channel = session.open_channel do |ch|
+      ch.exec("#{shell} -l") do |ch2, success|
+        # Set the terminal type
+        ch2.send_data 'export TERM=vt100n'
+        # Output each command as if they were entered on the command line
+        [commands].flatten.each do |command|
+          ch2.send_data "#{command}n"
+        end
+        # Remember to exit or we'll hang!
+        ch2.send_data 'exitn'
+        @request_execute_in_shell = success
+        # Configure to listen to ch2 data so you can grab stdout
+      end
+    end
+    channel.wait
+    @request_execute_in_shell
+  end
+end
