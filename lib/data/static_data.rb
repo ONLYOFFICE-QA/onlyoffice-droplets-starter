@@ -33,30 +33,30 @@ PATHS_LIST = [
   def self.get_project_name
       return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
 
-      File.read("#{Dir.home}/.do/project_name").delete("\n")
+      File.read("#{Dir.home}/.do/project_name").rstrip
   end
 
   def self.get_ssh_key_id
       return ENV['SSH_KEY_ID'] if ENV['SSH_KEY_ID']
 
-      File.read("#{Dir.home}/.do/ssh_key_id").delete("\n")
+      File.read("#{Dir.home}/.do/ssh_key_id").rstrip
   end
 
   def self.get_palladium_token
     return ENV['PALLADIUM_TOKEN'] if ENV['PALLADIUM_TOKEN']
 
-    File.read("#{ENV['HOME']}/.palladium/token")
+    File.read("#{ENV['HOME']}/.palladium/token").rstrip
   end
 
   def self.get_jwt_key
-    File.read("#{ENV['HOME']}/.documentserver/documentserver_jwt")
+    File.read("#{ENV['HOME']}/.documentserver/documentserver_jwt").rstrip
   end
 
   def self.s3_private_key
-    File.read("#{ENV['HOME']}/.s3/private_key")
+    File.read("#{ENV['HOME']}/.s3/private_key").rstrip
   end
 
   def self.s3_public_key
-    File.read("#{ENV['HOME']}/.s3/key")
+    File.read("#{ENV['HOME']}/.s3/key").rstrip
   end
 end
