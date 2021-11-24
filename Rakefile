@@ -33,7 +33,7 @@ task :run do
     remote_control_helper.initialize_keys(host, StaticData::DEFAULT_USER)
 
     remote_control_helper.run_bash_script(host, StaticData::DEFAULT_USER,
-                                          remote_control_helper.script('./lib/bash_scripts/add_swap.sh'))
+                                          File.read('lib/bash_scripts/add_swap.sh'))
 
     docserver_version = 'onlyoffice/4testing-documentserver-de:7.0.0.49'
 
