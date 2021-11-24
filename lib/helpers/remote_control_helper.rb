@@ -11,9 +11,9 @@ def sftp(host, user, &block)
   @sftp = Net::SFTP.start(host, user, &block)
 end
 
-# def ssh(host, user, &block)
-#   @ssh ||= Net::SSH.start(host, user, &block)
-# end
+def ssh(host, user, &block)
+  @ssh ||= Net::SSH.start(host, user, &block)
+end
 
 # Describer
 class RemoteControlHelper
