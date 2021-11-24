@@ -23,7 +23,3 @@ end
 def logger
   @logger = Logger.new($stdout)
 end
-
-def self.ssh(host, user, &block)
-  @ssh ||= Net::SSH.start(host, user, &block)
-end
