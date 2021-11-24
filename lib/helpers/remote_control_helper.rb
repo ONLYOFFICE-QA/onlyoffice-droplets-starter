@@ -33,7 +33,37 @@ class RemoteControlHelper
     @file_list.include?(file_name)
   end
 
+  # @param [Object] session
+  # @param [String] line_number
+  # @param [Object] desired
+  # @param [Object] replaceable
+  # @param [Object] file
+  # @return [TrueClass]
+  def sed(session, line_number = '', desired, replaceable, file)
+    sed_script = "#{line_number}s,#{desired},#{replaceable},"
+    response = session.exec! "sed -i #{sed_script} #{file}; echo done"
+    logger.info "Sed #{file} is #{response.rstrip}"
+  end
   public
+
+  def configuration_project(host, docserver_version)
+    ssh(host, StaticData::DEFAULT_USER) do |ssh|
+      response = ssh.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
+      logger.info response.rstrip
+
+      sed(ssh,'4', "\\\"\\\"", "\\\"#{StaticData.s3_public_key}\\\"",
+          'convert-service-testing/Dockerfile')
+      sed(ssh,'5', "\\\"\\\"", "\\\"#{StaticData.s3_private_key}\\\"",
+          'convert-service-testing/Dockerfile')
+      sed(ssh,'6', "\\\"\\\"", "\\\"#{StaticData.get_palladium_token}\\\"",
+          'convert-service-testing/Dockerfile')
+      sed(ssh,'7', "\\\"\\\"", "\\\"#{StaticData.get_jwt_key}\\\"",
+          'convert-service-testing/Dockerfile')
+
+      sed(ssh, '','onlyoffice/4testing-documentserver-ie:latest',
+          "#{docserver_version}", 'convert-service-testing/docker-compose.yml')
+    end
+  end
 
   # @param [Object] host
   # @param [Object] user
