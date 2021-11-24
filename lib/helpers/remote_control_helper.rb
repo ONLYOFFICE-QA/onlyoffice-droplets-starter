@@ -62,12 +62,6 @@ class RemoteControlHelper
     end
   end
 
-  # @param [Object] path
-  # @return [String]
-  def script(path)
-    File.read(path.to_s).to_s
-  end
-
   # @param [Object] session
   # @param [Object] commands
   # @param [String] shell
