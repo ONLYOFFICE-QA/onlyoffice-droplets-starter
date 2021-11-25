@@ -44,8 +44,12 @@ class RemoteControlHelper
     response = session.exec! "sed -i #{sed_script} #{file}; echo done"
     logger.info "Sed #{file} is #{response.rstrip}"
   end
+
   public
 
+  # @param [Object] host
+  # @param [Object] docserver_version
+  # @return [Array, Net::SSH::Authentication]
   def configuration_project(host, docserver_version)
     ssh(host, StaticData::DEFAULT_USER) do |ssh|
       response = ssh.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
