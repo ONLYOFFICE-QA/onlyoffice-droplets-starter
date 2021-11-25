@@ -50,10 +50,10 @@ class RemoteControlHelper
   # @param [Object] host
   # @param [Object] docserver_version
   # @return [Array, Net::SSH::Authentication]
-  def configuration_project(host, docserver_version)
+  def configuration_project(host, docserver_version, spec)
     ssh(host, StaticData::DEFAULT_USER) do |ssh|
-      response = ssh.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
-      logger.info response.rstrip
+      matches = ssh.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
+      logger.info matches.rstrip
 
       sed(ssh,'4', "\\\"\\\"", "\\\"#{StaticData.s3_public_key}\\\"",
           'convert-service-testing/Dockerfile')
@@ -64,8 +64,13 @@ class RemoteControlHelper
       sed(ssh,'7', "\\\"\\\"", "\\\"#{StaticData.get_jwt_key}\\\"",
           'convert-service-testing/Dockerfile')
 
-      sed(ssh, '','onlyoffice/4testing-documentserver-ie:latest',
-          "#{docserver_version}", 'convert-service-testing/docker-compose.yml')
+      sed(ssh, 'latest', docserver_version, 'convert-service-testing/.env')
+      sed(ssh, '\\\'\\\'', spec, 'convert-service-testing/.env')
+
+      matches = ssh.exec! 'cd convert-service-testing/; docker-compose up -d'
+      logger.info matches.rstrip
+
+      ssh.close unless ssh.closed?
     end
   end
 
@@ -88,11 +93,11 @@ class RemoteControlHelper
   # @param [Object] host
   # @param [Object] user
   # @param [Object] script
-  # @return [Array, Net::SSH::Authentication]
   def run_bash_script(host, user, script)
     ssh(host, user) do |ssh|
       request = execute_in_shell!(ssh, script)
       logger.info "Script installed? #{request}"
+      ssh.close unless ssh.closed?
     end
   end
 
