@@ -3,7 +3,6 @@
 require 'bundler/setup'
 require 'onlyoffice_digitalocean_wrapper'
 require 'droplet_kit'
-require 'net/sftp'
 require_relative 'data/static_data'
 require_relative 'helpers/digital_ocean_helper'
 require_relative 'helpers/remote_control_helper'

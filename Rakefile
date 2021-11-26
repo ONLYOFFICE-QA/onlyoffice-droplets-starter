@@ -30,7 +30,6 @@ task :run do
     #spec = 'check_open_docx_by_screen_spec.rb'
     host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     ssh_checker(host).wait_until_ssh_up
-    remote_control_helper.initialize_keys(host, StaticData::DEFAULT_USER)
     remote_control_helper.run_bash_script(host, StaticData::DEFAULT_USER,
                                           File.read('lib/bash_scripts/add_swap.sh'))
     remote_control_helper.configuration_project(host, docserver_version, spec)
