@@ -18,17 +18,13 @@ PATHS_LIST = [
         {dir: '.documentserver', file: 'documentserver_jwt'}
         ].freeze
 
-  SPEC_FILES = [
-        'check_open_docx_by_screen_spec.rb',
-        'check_open_epub_by_screen_spec.rb',
-        'check_open_fb2_by_screen_spec.rb',
-        'check_open_html_by_screen_spec.rb',
-        'check_open_odp_by_screen_spec.rb',
-        'check_open_ods_by_screen_spec.rb',
-        'check_open_odt_by_screen_spec.rb',
-        'check_open_pptx_by_screen_spec.rb',
-        'check_open_xlsx_by_screen_spec.rb'
-        ].freeze
+  SPEC_FILES = %w[check_open_docx_by_screen_spec.rb
+                  check_open_epub_by_screen_spec.rb
+                  check_open_fb2_by_screen_spec.rb
+                  check_open_odp_by_screen_spec.rb
+                  check_open_odt_by_screen_spec.rb
+                  check_open_pptx_by_screen_spec.rb
+                  check_open_xlsx_by_screen_spec.rb].freeze
 
   def self.get_project_name
       return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
