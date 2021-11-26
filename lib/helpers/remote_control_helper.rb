@@ -1,14 +1,10 @@
 # frozen_string_literal: true '
 
-require 'net/sftp'
+require 'net/ssh'
 require 'logger'
 
 def logger
   @logger = Logger.new($stdout)
-end
-
-def sftp(host, user, &block)
-  @sftp = Net::SFTP.start(host, user, &block)
 end
 
 def ssh(host, user, &block)
@@ -71,22 +67,6 @@ class RemoteControlHelper
       logger.info matches.rstrip
 
       ssh.close unless ssh.closed?
-    end
-  end
-
-  # @param [Object] host
-  # @param [Object] user
-  # @return [Net::SFTP::Session, nil]
-  def initialize_keys(host, user)
-    sftp(host, user) do |sftp|
-      StaticData::PATHS_LIST.map do |path|
-        sftp.mkdir! "/#{user}/#{path[:dir]}" unless remote_file_exist?(sftp, "/#{user}", path[:dir])
-        unless remote_file_exist?(sftp, "/#{user}/#{path[:dir]}", path[:file])
-          sftp.upload!("#{Dir.home}/#{path[:dir]}/#{path[:file]}",
-                       "/#{user}/#{path[:dir]}/#{path[:file]}")
-        end
-        logger.info "#{path[:dir]}/#{path[:file]} is written"
-      end
     end
   end
 
