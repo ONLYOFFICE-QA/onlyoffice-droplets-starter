@@ -41,6 +41,30 @@ class RemoteControlHelper
     logger.info "Sed #{file} is #{response.rstrip}"
   end
 
+  # @param [Object] session
+  # @param [Object] commands
+  # @param [String] shell
+  # @return [Object]
+  def execute_in_shell!(session, commands, shell = 'bash')
+    channel = session.open_channel do |ch|
+      ch.exec("#{shell} -l") do |ch2, success|
+        # Set the terminal type
+        ch2.send_data 'export TERM=vt100n'
+        # Output each command as if they were entered on the command line
+        [commands].flatten.each do |command|
+          ch2.send_data "#{command}n"
+        end
+        # Remember to exit or we'll hang!
+        ch2.send_data 'exitn'
+        @request_execute_in_shell = success
+        # Configure to listen to ch2 data so you can grab stdout
+      end
+    end
+    channel.wait
+    @request_execute_in_shell
+  end
+end
+
   public
 
   # @param [Object] host
@@ -80,27 +104,3 @@ class RemoteControlHelper
       ssh.close unless ssh.closed?
     end
   end
-
-  # @param [Object] session
-  # @param [Object] commands
-  # @param [String] shell
-  # @return [Object]
-  def execute_in_shell!(session, commands, shell = 'bash')
-    channel = session.open_channel do |ch|
-      ch.exec("#{shell} -l") do |ch2, success|
-        # Set the terminal type
-        ch2.send_data 'export TERM=vt100n'
-        # Output each command as if they were entered on the command line
-        [commands].flatten.each do |command|
-          ch2.send_data "#{command}n"
-        end
-        # Remember to exit or we'll hang!
-        ch2.send_data 'exitn'
-        @request_execute_in_shell = success
-        # Configure to listen to ch2 data so you can grab stdout
-      end
-    end
-    channel.wait
-    @request_execute_in_shell
-  end
-end
