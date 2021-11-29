@@ -24,7 +24,9 @@ PATHS_LIST = [
                   check_open_odp_by_screen_spec.rb
                   check_open_odt_by_screen_spec.rb
                   check_open_pptx_by_screen_spec.rb
-                  check_open_xlsx_by_screen_spec.rb].freeze
+                  check_open_xlsx_by_screen_spec.rb
+                  check_open_ods_by_screen_spec.rb
+                  check_open_html_by_screen_spec.rb].freeze
 
   def self.get_project_name
       return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
