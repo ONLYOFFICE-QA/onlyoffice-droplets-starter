@@ -35,6 +35,6 @@ task :run do
                                           File.read('lib/bash_scripts/add_swap.sh'))
     remote_control_helper.configuration_project(host, docserver_version, spec)
 
-    sleep(5)
+    sleep 5
   end
 end
