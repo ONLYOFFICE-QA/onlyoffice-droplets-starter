@@ -16,19 +16,6 @@ class RemoteControlHelper
 
   private
 
-  # @param [Object] sftp_object
-  # @param [Object] path
-  # @param [Object] file_name
-  # @return [TrueClass, FalseClass]
-  def remote_file_exist?(sftp_object, path, file_name)
-    @file_list.clear if nil?
-    @file_list = []
-    sftp_object.dir.foreach(path) do |entry|
-      @file_list << entry.name
-    end
-    @file_list.include?(file_name)
-  end
-
   # @param [Object] session
   # @param [String] line_number
   # @param [Object] desired
