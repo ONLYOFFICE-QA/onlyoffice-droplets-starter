@@ -19,17 +19,14 @@ task :create_droplets, :container_count do |_t, args|
   end
 end
 
-desc 'Convert_service_testing run in parallel'
-task :cs_run, :docserver_version do |_t, args|
+desc 'Docserver version entry format "7.0.0.0"'
+task :convert_run, :docserver_version do |_t, args|
   docserver_version = args[:docserver_version].to_s
 
   StaticData::SPEC_FILES.each do |spec|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)
-    #droplet_name = 'droplets-starter-0'
-    #docserver_version = '7.0.0.49'
-    #spec = 'check_open_docx_by_screen_spec.rb'
     host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     # ssh_checker(host).wait_until_ssh_up
     sleep 30
