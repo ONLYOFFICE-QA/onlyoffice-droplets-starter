@@ -19,8 +19,10 @@ task :create_droplets, :container_count do |_t, args|
   end
 end
 
-desc 'Convert service testing run in parallel container'
-task :run do
+desc 'Convert_service_testing run in parallel'
+task :cs_run, :docserver_version do |_t, args|
+  docserver_version = args[:docserver_version].to_s
+
   StaticData::SPEC_FILES.each do |spec|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
