@@ -8,7 +8,7 @@ def logger
 end
 
 def ssh(host, user, &block)
-  @ssh ||= Net::SSH.start(host, user, &block)
+  @ssh = Net::SSH.start(host, user, &block)
 end
 
 # Describer
@@ -76,8 +76,6 @@ end
 
       matches = ssh.exec! 'cd convert-service-testing/; docker-compose up -d'
       logger.info matches.rstrip
-
-      ssh.close unless ssh.closed?
     end
   end
 
@@ -88,6 +86,5 @@ end
     ssh(host, user) do |ssh|
       request = execute_in_shell!(ssh, script)
       logger.info "Script installed? #{request}"
-      ssh.close unless ssh.closed?
     end
   end
