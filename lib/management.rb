@@ -11,10 +11,6 @@ def digital_ocean_helper
   @digital_ocean_helper ||= DigitalOceanHelper.new
 end
 
-def ssh_checker(ip)
-  @ssh_checker ||= OnlyofficeDigitaloceanWrapper::SshChecker.new(ip)
-end
-
 def remote_control_helper
   @remote_control_helper ||= RemoteControlHelper.new
 end
