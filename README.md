@@ -15,7 +15,7 @@
 ### After add digitalocean API token in file:
 
 ```bash
-.do/access_token
+~/.do/access_token
 ```
 
 ## Configuration
@@ -54,6 +54,12 @@ curl -X GET \
   -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
   "https://api.digitalocean.com/v2/account/keys" \
   | jq
+```
+
+In the output of the script copy the id value for your ssh and set the value in the file:
+
+```bash
+~/.do/ssh_key_id
 ```
 
 ### Finally for configuration add the document server version to the bash script:
