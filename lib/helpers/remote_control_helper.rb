@@ -1,4 +1,4 @@
-# frozen_string_literal: true '
+# frozen_string_literal: true
 
 require 'net/ssh'
 require 'logger'
@@ -58,23 +58,23 @@ end
   # @param [Object] docserver_version
   # @return [Array, Net::SSH::Authentication]
   def configuration_project(host, docserver_version, spec)
-    ssh(host, StaticData::DEFAULT_USER) do |ssh|
-      matches = ssh.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
+    ssh(host, StaticData::DEFAULT_USER) do |session|
+      matches = session.exec! 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
       logger.info matches.rstrip
 
-      sed(ssh,'4', "\\\"\\\"", "\\\"#{StaticData.s3_public_key}\\\"",
+      sed(session,'4', "\\\"\\\"", "\\\"#{StaticData.s3_public_key}\\\"",
           'convert-service-testing/Dockerfile')
-      sed(ssh,'5', "\\\"\\\"", "\\\"#{StaticData.s3_private_key}\\\"",
+      sed(session,'5', "\\\"\\\"", "\\\"#{StaticData.s3_private_key}\\\"",
           'convert-service-testing/Dockerfile')
-      sed(ssh,'6', "\\\"\\\"", "\\\"#{StaticData.get_palladium_token}\\\"",
+      sed(session,'6', "\\\"\\\"", "\\\"#{StaticData.get_palladium_token}\\\"",
           'convert-service-testing/Dockerfile')
-      sed(ssh,'7', "\\\"\\\"", "\\\"#{StaticData.get_jwt_key}\\\"",
+      sed(session,'7', "\\\"\\\"", "\\\"#{StaticData.get_jwt_key}\\\"",
           'convert-service-testing/Dockerfile')
 
-      sed(ssh, 'latest', docserver_version, 'convert-service-testing/.env')
-      sed(ssh, '\\\'\\\'', spec, 'convert-service-testing/.env')
+      sed(session, 'latest', docserver_version, 'convert-service-testing/.env')
+      sed(session, '\\\'\\\'', spec, 'convert-service-testing/.env')
 
-      matches = ssh.exec! 'cd convert-service-testing/; docker-compose up -d'
+      matches = session.exec! 'cd convert-service-testing/; docker-compose up -d'
       logger.info matches.rstrip
     end
   end
