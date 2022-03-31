@@ -26,6 +26,8 @@ GEM
     faraday-net_http (2.0.1)
     ice_nine (0.11.2)
     kartograph (0.2.8)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
     net-ssh (6.1.0)
     net-telnet (0.2.0)
     onlyoffice_digitalocean_wrapper (0.8.0)
@@ -72,6 +74,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt_pbkdf (>= 1.0, < 2.0)
   ed25519 (>= 1.2, < 2.0)
+  net-sftp (~> 2.1, >= 2.1.2)
   net-ssh (~> 6.1)
   onlyoffice_digitalocean_wrapper
   rake
