@@ -12,9 +12,9 @@ class StaticData
   DEFAULT_USER = 'root'
 
 PATHS_LIST = [
-        {dir: '.palladium',      file: 'token'},
-        {dir: '.s3',             file: 'private_key'},
         {dir: '.s3',             file: 'key'},
+        {dir: '.s3',             file: 'private_key'},
+        {dir: '.palladium',      file: 'token'},
         {dir: '.documentserver', file: 'documentserver_jwt'}
         ].freeze
 
