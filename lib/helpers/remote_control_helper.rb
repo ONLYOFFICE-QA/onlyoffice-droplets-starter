@@ -38,19 +38,6 @@ class RemoteControlHelper
   private
 
   # @param [Object] session
-  # @param [String] line_number
-  # @param [Object] desired
-  # @param [Object] replaceable
-  # @param [Object] file
-  #
-  # @return [TrueClass]
-  def sed(session, line_number = '', desired, replaceable, file)
-    sed_script = "#{line_number}s,#{desired},#{replaceable},"
-    response = session.exec! "sed -i #{sed_script} #{file}; echo done"
-    logger.info "Sed #{file} is #{response.rstrip}"
-  end
-
-  # @param [Object] session
   # @param [Object] script
   # @param [String] shell
   #
