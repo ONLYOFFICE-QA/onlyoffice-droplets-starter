@@ -2,7 +2,6 @@
 
 require_relative 'lib/management'
 
-
 desc 'Create containers'
 task :create_droplets, :container_count do |_t, args|
   args.with_defaults(container_count: 1)
@@ -27,12 +26,15 @@ task :convert_run, :docserver_version do |_t, args|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)
+
+    # debug
+    # droplet_name = 'droplets-starter-0'
+    # docserver_version = '7.1.0.91'
+    # spec = 'check_open_docx_by_screen_spec.rb'
+
     host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
-    remote_control_helper = RemoteControlHelper.new
-    remote_control_helper.run_bash_script(host, StaticData::DEFAULT_USER,
-    File.read('lib/bash_scripts/add_swap.sh'))
-    remote_control_helper.configuration_project(host, docserver_version, spec)
-    sleep 5  # Timeout between commands to not be banned by ssh
+    RemoteControlHelper.new(host, docserver_version, spec).configuration_project
+    sleep 5 # Timeout between commands to not be banned by ssh
   end
 end
