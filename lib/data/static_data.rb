@@ -28,6 +28,11 @@ PATHS_LIST = [
                   check_open_ods_by_screen_spec.rb
                   check_open_html_by_screen_spec.rb].freeze
 
+  DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile"
+  ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env"
+
+  GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
+
   def self.get_project_name
       return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
 
