@@ -40,15 +40,15 @@ class DigitalOceanHelper
                                       region: StaticData::DROPLET_REGION,
                                       image: StaticData::DROPLET_IMAGE,
                                       size: StaticData::DROPLET_SIZE,
-                                      ssh_keys: [StaticData.get_ssh_key_id])
+                                      ssh_keys: [StaticData.ssh_key_id])
     @do_api.client.droplets.create(droplet)
     @do_api.wait_until_droplet_have_status(loader_name)
   end
 
   def include_in_the_project(droplet_name)
     droplet_id = @do_api.get_droplet_id_by_name(droplet_name)
-    project_id = @do_api.get_project_id_by_name(StaticData.get_project_name)
+    project_id = @do_api.get_project_id_by_name(StaticData.project_name)
     @do_api.client.projects.assign_resources(["do:droplet:#{droplet_id}"], id: project_id)
-    logger.info("Droplet #{droplet_name} added by project #{StaticData.get_project_name}")
+    logger.info("Droplet #{droplet_name} added by project #{StaticData.project_name}")
   end
 end
