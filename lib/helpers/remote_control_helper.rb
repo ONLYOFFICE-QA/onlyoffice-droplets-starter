@@ -21,13 +21,12 @@ end
 
 # Describer
 class RemoteControlHelper
-
   attr_reader :docserver_version, :spec, :host
 
   # @param [Object] host
   # @param [Object] docserver_version
   # @param [Object] spec_name
-  # 
+  #
   # @return [Object]
   def initialize(host, docserver_version, spec_name)
     @host = host
@@ -45,7 +44,8 @@ class RemoteControlHelper
   def execute_in_shell!(session, script, shell = 'bash')
     channel = session.open_channel do |ch|
       ch.exec("#{shell} -l") do |ch2, success|
-        raise "could not execute command" unless success
+        raise 'could not execute command' unless success
+
         # Set the terminal type
         ch2.send_data 'export TERM=vt100n'
         # Output each command as if they were entered on the command line
@@ -68,15 +68,13 @@ end
 def download!(session, path)
   io = StringIO.new
   session.sftp.connect do |sftp|
-    begin
-      sftp.download!(path, io)
-    rescue Net::SFTP::Operations::StatusException => e
-      logger.error e.message
-    ensure
-      if io.string.empty?
-        logger.error 'Response data empty'
-        sftp.close
-      end
+    sftp.download!(path, io)
+  rescue Net::SFTP::Operations::StatusException => e
+    logger.error e.message
+  ensure
+    if io.string.empty?
+      logger.error 'Response data empty'
+      sftp.close
     end
   end
   io.string
@@ -104,10 +102,11 @@ end
 #
 # @return [Object]
 def overwrite(data, pattern, change)
-  if String === change
+  case change
+  when String
     data = data.sub(pattern, "\"#{change}\"")
     logger.info 'pattern overwritten'
-  elsif Array === change
+  when Array
     if data.scan(pattern).length == change.length
       change.each do |path|
         data = data.sub(pattern, "\"#{File.read("#{ENV['HOME']}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
@@ -134,7 +133,6 @@ public
 # @return [Array, Net::SSH::Authentication]
 def configuration_project
   ssh(host, StaticData::DEFAULT_USER) do |session|
-
     run_bash_script(File.read('lib/bash_scripts/add_swap.sh'))
 
     output = session.exec! StaticData::GIT_CLONE_PROJECT
@@ -145,9 +143,9 @@ def configuration_project
             dockerfile.send(:overwrite, dockerfile, /""/, StaticData::PATHS_LIST))
 
     env = download!(session, StaticData::ENV)
-    upload!(session, StaticData::ENV, 
+    upload!(session, StaticData::ENV,
             env = env.send(:overwrite, env, /latest/, @docserver_version))
-    upload!(session, StaticData::ENV, 
+    upload!(session, StaticData::ENV,
             env.send(:overwrite, env, /''/, @spec_name))
 
     output = session.exec! 'cd convert-service-testing/; docker-compose up -d'
