@@ -2,10 +2,10 @@
 
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'net-ssh'
 gem 'net-sftp'
+gem 'net-ssh'
 gem 'onlyoffice_digitalocean_wrapper'
+gem 'rake'
 
 # # bcrypt_pbkdf is used to encode\decode the received key
 gem 'bcrypt_pbkdf'
