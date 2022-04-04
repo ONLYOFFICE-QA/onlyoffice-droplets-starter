@@ -72,8 +72,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  bcrypt_pbkdf (>= 1.0, < 2.0)
-  ed25519 (>= 1.2, < 2.0)
+  bcrypt_pbkdf
+  ed25519
   net-sftp
   net-ssh
   onlyoffice_digitalocean_wrapper
