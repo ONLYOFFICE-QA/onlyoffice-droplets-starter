@@ -20,7 +20,7 @@ def ssh(host, user, &block)
 end
 
 # Describer
-class RemoteControlHelper
+class RemoteAccess
   attr_reader :docserver_version, :spec, :host
 
   # @param [Object] host

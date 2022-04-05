@@ -31,4 +31,4 @@ Naming/AccessorMethodName:
 # Offense count: 1
 Style/OptionalArguments:
   Exclude:
-    - 'lib/helpers/remote_control_helper.rb'
+    - 'lib/helpers/remote_access.rb'
