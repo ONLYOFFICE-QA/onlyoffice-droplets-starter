@@ -4,19 +4,12 @@ require 'net/ssh'
 require 'net/sftp'
 require 'stringio'
 require 'logger'
+require_relative 'ssh_client'
+require_relative 'file_manager'
 
 # @return [Logger]
 def logger
   @logger = Logger.new($stdout)
-end
-
-# @param [Object] host
-# @param [Object] user
-# @param [Proc] block
-#
-# @return [Array, Net::SSH::Authentication]
-def ssh(host, user, &block)
-  @ssh = Net::SSH.start(host, user, &block)
 end
 
 # Describer
@@ -59,96 +52,80 @@ class RemoteAccess
     end
     channel.wait
   end
-end
 
-# @param [Object] session
-# @param [Object] path
-#
-# @return [String]
-def download!(session, path)
-  io = StringIO.new
-  session.sftp.connect do |sftp|
-    sftp.download!(path, io)
-  rescue Net::SFTP::Operations::StatusException => e
-    logger.error e.message
-  ensure
-    if io.string.empty?
-      logger.error 'Response data empty'
-      sftp.close
-    end
-  end
-  io.string
-end
-
-# @param [Object] session
-# @param [Object] file_path
-# @param [Object] data
-#
-# @return [Object]
-def upload!(session, file_path, data)
-  session.sftp.connect do |sftp|
-    io = StringIO.new(data.to_s)
-    begin
-      sftp.upload!(io, file_path)
+  # @param [Object] session
+  # @param [Object] path
+  #
+  # @return [String]
+  def download!(session, path)
+    io = StringIO.new
+    session.sftp.connect do |sftp|
+      sftp.download!(path, io)
     rescue Net::SFTP::Operations::StatusException => e
       logger.error e.message
+    ensure
+      if io.string.empty?
+        logger.error 'Response data empty'
+        sftp.close
+      end
     end
+    io.string
   end
-end
 
-# @param [Object] data
-# @param [Object] pattern
-# @param [Object] change
-#
-# @return [Object]
-def overwrite(data, pattern, change)
-  case change
-  when String
-    data = data.sub(pattern, "\"#{change}\"")
-    logger.info 'pattern overwritten'
-  when Array
-    if data.scan(pattern).length == change.length
-      change.each do |path|
-        data = data.sub(pattern, "\"#{File.read("#{ENV['HOME']}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
-        logger.info "#{path[:file]} is written"
+  # @param [Object] session
+  # @param [Object] file_path
+  # @param [Object] data
+  #
+  # @return [Object]
+  def upload!(session, file_path, data)
+    session.sftp.connect do |sftp|
+      io = StringIO.new(data.to_s)
+      begin
+        sftp.upload!(io, file_path)
+      rescue Net::SFTP::Operations::StatusException => e
+        logger.error e.message
       end
     end
   end
-  data
-end
 
-# @param [Object] user
-# @param [Object] script
-#
-# @return [Array, Net::SSH::Authentication]
-def run_bash_script(user = StaticData::DEFAULT_USER, script)
-  ssh(@host, user) do |ssh|
-    request = execute_in_shell!(ssh, script)
-    logger.info "Script installed? #{request}"
+
+  # @param [Object] session
+  # @param [Object] path_to_script
+  # 
+  # @return [TrueClass]
+  def run_bash_script(session, path_to_script)
+    request = execute_in_shell!(session, File.read(path_to_script.to_s))
+    if request
+      logger.info 'Script installed'
+    else
+      logger.error 'Script is not installed'
+    end
+    request
   end
-end
 
-public
+  public
 
-# @return [Array, Net::SSH::Authentication]
-def configuration_project
-  ssh(host, StaticData::DEFAULT_USER) do |session|
-    run_bash_script(File.read('lib/bash_scripts/add_swap.sh'))
+  # @return [Array, Net::SSH::Authentication]
+  def configuration_project
+    SshClient.new.connect(host, StaticData::DEFAULT_USER, ssh_options = {}) do |session|
 
-    output = session.exec! StaticData::GIT_CLONE_PROJECT
-    logger.info output.rstrip
+      run_bash_script(session, 'lib/bash_scripts/add_swap.sh')
 
-    dockerfile = download!(session, StaticData::DOCKERFILE)
-    upload!(session, StaticData::DOCKERFILE,
-            dockerfile.send(:overwrite, dockerfile, /""/, StaticData::PATHS_LIST))
+      output = session.exec! StaticData::GIT_CLONE_PROJECT
+      logger.info output.rstrip
 
-    env = download!(session, StaticData::ENV)
-    upload!(session, StaticData::ENV,
-            env = env.send(:overwrite, env, /latest/, @docserver_version))
-    upload!(session, StaticData::ENV,
-            env.send(:overwrite, env, /''/, @spec_name))
+      dockerfile = download!(session, StaticData::DOCKERFILE)
+      upload!(session, StaticData::DOCKERFILE,
+              FileManager.overwrite(dockerfile, /""/, StaticData::PATHS_LIST))
 
-    output = session.exec! 'cd convert-service-testing/; docker-compose up -d'
-    logger.info output.rstrip
+      env = download!(session, StaticData::ENV)
+      upload!(session, StaticData::ENV,
+              env = FileManager.overwrite(env, /latest/, @docserver_version))
+      upload!(session, StaticData::ENV,
+              FileManager.overwrite(env,  /''/, @spec_name))
+
+      output = session.exec! 'cd convert-service-testing/; docker-compose up -d'
+      logger.info output.rstrip
+    end
   end
 end
