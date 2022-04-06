@@ -30,6 +30,7 @@ class StaticData
 
   DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile"
   ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env"
+  SWAP = './lib/bash_scripts/swap.sh'
 
   GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
 

@@ -109,7 +109,7 @@ class RemoteAccess
   def configuration_project
     SshClient.new.connect(host, StaticData::DEFAULT_USER, ssh_options = {}) do |session|
 
-      run_bash_script(session, 'lib/bash_scripts/add_swap.sh')
+      run_bash_script(session, StaticData::SWAP)
 
       output = session.exec! StaticData::GIT_CLONE_PROJECT
       logger.info output.rstrip
