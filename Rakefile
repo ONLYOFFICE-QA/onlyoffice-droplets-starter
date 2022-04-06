@@ -34,7 +34,7 @@ task :convert_run, :docserver_version do |_t, args|
 
     host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
-    RemoteAccess.new(host, docserver_version, spec).configuration_project
+    RemoteConfiguration.new(host, docserver_version, spec).convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh
   end
 end
