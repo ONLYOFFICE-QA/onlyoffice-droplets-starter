@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'net/ssh'
-require 'net/sftp'
-require 'stringio'
-
 # Describe
 class SshClient
   # @param [Object] host
