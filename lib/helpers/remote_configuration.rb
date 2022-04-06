@@ -14,7 +14,7 @@ def logger
 end
 
 # Describer
-class RemoteAccess
+class RemoteConfiguration
   attr_reader :docserver_version, :spec, :host
 
   # @param [Object] host

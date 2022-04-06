@@ -19,4 +19,4 @@ Metrics/MethodLength:
 # Offense count: 1
 Style/OptionalArguments:
   Exclude:
-    - 'lib/helpers/remote_access.rb'
+    - 'lib/helpers/remote_configuration.rb'
