@@ -10,7 +10,6 @@ class SshClient
   # @param [Object] user
   # @param [Object] options
   # @param [Proc] block
-  #
   # @return [Array, Net::SSH::Authentication]
   def connect(host, user, options, &block)
     Net::SSH.start(host, user, options, &block)
@@ -35,7 +34,6 @@ class SshClient
     # @param [Object] session
     # @param [Object] script
     # @param [String] shell
-    #
     # @return [Object]
     def execute_in_shell!(session, script, shell = 'bash')
       channel = session.open_channel do |ch|

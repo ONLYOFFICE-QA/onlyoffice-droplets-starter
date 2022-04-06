@@ -7,7 +7,6 @@ class FileManager
   # @param [Object] data
   # @param [Object] pattern
   # @param [Object] changes
-  #
   # @return [Object]
   def self.overwrite(data, pattern, changes)
     case changes

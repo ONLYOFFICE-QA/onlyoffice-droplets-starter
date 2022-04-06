@@ -10,6 +10,7 @@ class DigitalOceanHelper
 
   private
 
+  # @return [Logger]
   def logger
     @logger ||= Logger.new($stdout)
   end
@@ -35,6 +36,8 @@ class DigitalOceanHelper
     "#{StaticData::DROPLET_NAME_PATTERN}-#{loaders_digits.max + 1}"
   end
 
+  # @param [Object] loader_name
+  # @return [Symbol, nil]
   def create_droplet(loader_name)
     droplet = DropletKit::Droplet.new(name: loader_name,
                                       region: StaticData::DROPLET_REGION,
@@ -45,6 +48,8 @@ class DigitalOceanHelper
     @do_api.wait_until_droplet_have_status(loader_name)
   end
 
+  # @param [Object] droplet_name
+  # @return [TrueClass]
   def include_in_the_project(droplet_name)
     droplet_id = @do_api.get_droplet_id_by_name(droplet_name)
     project_id = @do_api.get_project_id_by_name(StaticData.project_name)

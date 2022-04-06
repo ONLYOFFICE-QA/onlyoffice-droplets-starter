@@ -19,7 +19,6 @@ class RemoteAccess
   # @param [Object] host
   # @param [Object] docserver_version
   # @param [Object] spec_name
-  #
   # @return [Object]
   def initialize(host, docserver_version, spec_name)
     @host = host
@@ -31,7 +30,6 @@ class RemoteAccess
 
   # @param [Object] session
   # @param [Object] path
-  #
   # @return [String]
   def download!(session, path)
     io = StringIO.new
@@ -51,7 +49,6 @@ class RemoteAccess
   # @param [Object] session
   # @param [Object] file_path
   # @param [Object] data
-  #
   # @return [Object]
   def upload!(session, file_path, data)
     session.sftp.connect do |sftp|
