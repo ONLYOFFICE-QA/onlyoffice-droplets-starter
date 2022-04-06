@@ -30,30 +30,6 @@ class RemoteAccess
   private
 
   # @param [Object] session
-  # @param [Object] script
-  # @param [String] shell
-  #
-  # @return [Object]
-  def execute_in_shell!(session, script, shell = 'bash')
-    channel = session.open_channel do |ch|
-      ch.exec("#{shell} -l") do |ch2, success|
-        raise 'could not execute command' unless success
-
-        # Set the terminal type
-        ch2.send_data 'export TERM=vt100n'
-        # Output each command as if they were entered on the command line
-        [script].flatten.each do |command|
-          ch2.send_data "#{command}n"
-        end
-        # Remember to exit or we'll hang!
-        ch2.send_data 'exitn'
-        # Configure to listen to ch2 data so you can grab stdout
-      end
-    end
-    channel.wait
-  end
-
-  # @param [Object] session
   # @param [Object] path
   #
   # @return [String]
@@ -88,28 +64,12 @@ class RemoteAccess
     end
   end
 
-
-  # @param [Object] session
-  # @param [Object] path_to_script
-  # 
-  # @return [TrueClass]
-  def run_bash_script(session, path_to_script)
-    request = execute_in_shell!(session, File.read(path_to_script.to_s))
-    if request
-      logger.info 'Script installed'
-    else
-      logger.error 'Script is not installed'
-    end
-    request
-  end
-
   public
 
   # @return [Array, Net::SSH::Authentication]
   def configuration_project
-    SshClient.new.connect(host, StaticData::DEFAULT_USER, ssh_options = {}) do |session|
-
-      run_bash_script(session, StaticData::SWAP)
+    SshClient.new.connect(host, StaticData::DEFAULT_USER, {}) do |session|
+      SshClient.run(session, StaticData::SWAP)
 
       output = session.exec! StaticData::GIT_CLONE_PROJECT
       logger.info output.rstrip
@@ -120,9 +80,9 @@ class RemoteAccess
 
       env = download!(session, StaticData::ENV)
       upload!(session, StaticData::ENV,
-              env = FileManager.overwrite(env, /latest/, @docserver_version))
+              env = FileManager.overwrite(env,  /latest/, @docserver_version))
       upload!(session, StaticData::ENV,
-              FileManager.overwrite(env,  /''/, @spec_name))
+              FileManager.overwrite(env, /''/, @spec_name))
 
       output = session.exec! 'cd convert-service-testing/; docker-compose up -d'
       logger.info output.rstrip
