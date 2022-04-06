@@ -35,15 +35,15 @@ class StaticData
   GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
 
   def self.project_name
-      return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
+    return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
 
-      File.read("#{Dir.home}/.do/project_name").rstrip
+    File.read("#{Dir.home}/.do/project_name").rstrip
   end
 
   def self.ssh_key_id
-      return ENV['SSH_KEY_ID'] if ENV['SSH_KEY_ID']
+    return ENV['SSH_KEY_ID'] if ENV['SSH_KEY_ID']
 
-      File.read("#{Dir.home}/.do/ssh_key_id").rstrip
+    File.read("#{Dir.home}/.do/ssh_key_id").rstrip
   end
 
   def self.palladium_token

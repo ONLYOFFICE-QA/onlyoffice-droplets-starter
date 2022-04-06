@@ -4,7 +4,6 @@ require 'logger'
 
 # Describe
 class FileManager
-
   # @param [Object] data
   # @param [Object] pattern
   # @param [Object] changes
