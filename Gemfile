@@ -15,6 +15,7 @@ gem 'bcrypt_pbkdf'
 gem 'ed25519'
 
 group :development do
-  gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false
+  gem 'rubocop'
+  gem 'rubocop-performance'
+  gem 'rubocop-rake'
 end
