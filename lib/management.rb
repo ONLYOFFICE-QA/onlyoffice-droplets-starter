@@ -20,5 +20,5 @@ end
 
 # @return [Logger] Object for interaction with a simple logger
 def logger
-  @logger = Logger.new($stdout)
+  @logger ||= Logger.new($stdout)
 end
