@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
-require 'net/ssh'
-require 'net/sftp'
-require 'stringio'
-require 'logger'
-require_relative 'ssh_client'
-require_relative 'sftp_client'
-require_relative 'file_manager'
-
-# @return [Logger]
-def logger
-  @logger = Logger.new($stdout)
-end
+require_relative '../management'
 
 # Describer
 class RemoteConfiguration

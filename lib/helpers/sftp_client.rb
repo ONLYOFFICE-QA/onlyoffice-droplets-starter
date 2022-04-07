@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../management'
+
 # Describe
 class SftpClient
   class << self

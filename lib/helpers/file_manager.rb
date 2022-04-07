@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'logger'
+require_relative '../management'
 
 # Describe
 class FileManager
@@ -13,7 +13,7 @@ class FileManager
       case changes
       when String
         data = data.sub(pattern, "\"#{changes}\"")
-        Logger.new(@stdout).info 'is overwritten by the pattern'
+        logger.info 'is overwritten by the pattern'
       when Array
         if data.scan(pattern).length == changes.length
           changes.each do |path|
@@ -22,7 +22,7 @@ class FileManager
           end
         end
       else
-        Logger.new(@stdout).error 'Overwrite error'
+        logger.error 'Overwrite error'
       end
       data
     end

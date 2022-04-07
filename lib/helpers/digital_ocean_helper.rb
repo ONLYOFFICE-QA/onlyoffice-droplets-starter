@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../management'
+
 # Class represent rake helper methods
 class DigitalOceanHelper
   attr_reader :do_api
@@ -9,11 +11,6 @@ class DigitalOceanHelper
   end
 
   private
-
-  # @return [Logger]
-  def logger
-    @logger ||= Logger.new($stdout)
-  end
 
   # @return [Array<String>] names of currently run loaders
   def loaders_names
