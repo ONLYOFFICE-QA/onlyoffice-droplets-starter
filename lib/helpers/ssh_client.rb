@@ -48,6 +48,7 @@ class SshClient
       channel = session.open_channel do |ch|
         ch.exec("#{shell} -l") do |ch2, success|
           raise 'could not execute command' unless success
+
           # Set the terminal type
           ch2.send_data 'export TERM=vt100n'
           # Output each command as if they were entered on the command line
