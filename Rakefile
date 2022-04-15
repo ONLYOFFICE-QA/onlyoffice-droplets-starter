@@ -19,9 +19,7 @@ task :create_droplets, :container_count do |_t, args|
 end
 
 desc 'Docserver version entry format "7.0.0.0"'
-task :convert_run, :docserver_version do |_t, args|
-  docserver_version = args[:docserver_version].to_s
-
+task :convert_run, :version do |_t, args|
   StaticData::SPEC_FILES.each do |spec|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
@@ -29,12 +27,13 @@ task :convert_run, :docserver_version do |_t, args|
 
     # debug
     # droplet_name = 'droplets-starter-0'
-    # docserver_version = '7.1.0.91'
+    # version = '7.1.0.91'
     # spec = 'check_open_docx_by_screen_spec.rb'
 
-    host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
-    RemoteConfiguration.new(host, docserver_version, spec).convert_service_testing
+    RemoteConfiguration.new(host: digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name),
+                            version: args[:version].to_s,
+                            spec: spec).convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh
   end
 end

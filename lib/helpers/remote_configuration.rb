@@ -4,16 +4,12 @@ require_relative '../management'
 
 # Describer
 class RemoteConfiguration
-  attr_reader :docserver_version, :spec, :host
+  attr_reader :version, :spec, :host
 
-  # @param [Object] host
-  # @param [Object] docserver_version
-  # @param [Object] spec_name
-  # @return [Object]
-  def initialize(host, docserver_version, spec_name)
-    @host = host
-    @docserver_version = docserver_version
-    @spec_name = spec_name
+  def initialize(args)
+    @host       = args[:host]
+    @version    = args[:version]
+    @spec_name  = args[:spec]
   end
 
   # @return [Array, Net::SSH::Authentication]
@@ -28,7 +24,7 @@ class RemoteConfiguration
       env = SftpClient.download!(session, StaticData::ENV)
       SftpClient.upload!(session,
                          StaticData::ENV,
-                         env = FileManager.overwrite(env, /latest/, @docserver_version))
+                         env = FileManager.overwrite(env, /latest/, @version))
       SftpClient.upload!(session,
                          StaticData::ENV,
                          FileManager.overwrite(env, /''/, @spec_name))
