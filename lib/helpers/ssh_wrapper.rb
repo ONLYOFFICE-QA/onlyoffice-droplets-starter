@@ -6,6 +6,7 @@ require_relative '../management'
 # https://www.rubydoc.info/github/net-ssh/net-ssh/Net/SSH
 class SshWrapper
   attr_reader :ssh
+
   def initialize(host, user, options, &block)
     @ssh = Net::SSH.start(host, user, options, &block)
   end
@@ -60,23 +61,19 @@ class SshWrapper
         raise 'could not execute command' unless success
 
         # "on_data" is called when the process writes something to stdout
-        ch2.on_data do |c, data|
+        ch2.on_data do |_c, data|
           $stdout.print data
         end
-
         # "on_extended_data" is called when the process writes something to stderr
-        ch2.on_extended_data do |c, type, data|
+        ch2.on_extended_data do |_c, _type, data|
           $stderr.print data
         end
-
         # Set the terminal type
         ch2.send_data 'export TERM=vt100n'
-
         # Output each command as if they were entered on the command line
         [script].flatten.each do |command|
           ch2.send_data "#{command}n"
         end
-
         # Remember to exit or we'll hang!
         ch2.send_data 'exit'
       end

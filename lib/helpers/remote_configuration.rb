@@ -5,6 +5,7 @@ require_relative '../management'
 # Describer
 class RemoteConfiguration
   attr_reader :version, :spec, :host
+
   def initialize(args)
     @host       = args[:host]
     @version    = args[:version]
@@ -23,12 +24,10 @@ class RemoteConfiguration
     ssh do |ch|
       ssh.execute_in_shell!(ch, File.read(StaticData::SWAP))
       ch.exec!(StaticData::GIT_CLONE_PROJECT)
-
       dockerfile = ssh.download!(ch, StaticData::DOCKERFILE)
       ssh.upload!(ch,
                   StaticData::DOCKERFILE,
                   f_manager.overwrite(dockerfile, /""/, StaticData::PATHS_LIST))
-
       env = ssh.download!(ch, StaticData::ENV)
       ssh.upload!(ch,
                   StaticData::ENV,
@@ -36,8 +35,7 @@ class RemoteConfiguration
       ssh.upload!(ch,
                   StaticData::ENV,
                   f_manager.overwrite(env, /''/, @spec_name))
-
-      ch.exec!('cd convert-service-testing/; docker-compose up -d') do |ch2, stream, data|
+      ch.exec!('cd convert-service-testing/; docker-compose up -d') do |_ch2, stream, data|
         $stdout << data if stream == :stdout
       end
     end
