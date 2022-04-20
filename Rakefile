@@ -27,11 +27,12 @@ task :convert_run, :version do |_t, args|
 
     # debug
     # droplet_name = 'droplets-starter-0'
-    # version = '7.1.0.91'
+    # version = '7.1.0.184'
     # spec = 'check_open_docx_by_screen_spec.rb'
 
+    host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
     OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
-    RemoteConfiguration.new(host: digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name),
+    RemoteConfiguration.new(host: host,
                             version: args[:version].to_s,
                             spec: spec).build_convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh
