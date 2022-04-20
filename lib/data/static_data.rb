@@ -25,6 +25,7 @@ class StaticData
                   check_open_odt_by_screen_spec.rb
                   check_open_pptx_by_screen_spec.rb
                   check_open_xlsx_by_screen_spec.rb
+                  check_open_xlsb_by_screen_spec.rb
                   check_open_ods_by_screen_spec.rb
                   check_open_html_by_screen_spec.rb].freeze
 
