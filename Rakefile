@@ -33,7 +33,7 @@ task :convert_run, :version do |_t, args|
     OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
     RemoteConfiguration.new(host: digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name),
                             version: args[:version].to_s,
-                            spec: spec).convert_service_testing
+                            spec: spec).build_convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh
   end
 end
