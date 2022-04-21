@@ -22,7 +22,7 @@ class RemoteConfiguration
 
   def build_convert_service_testing
     ssh do |channel|
-      ssh.execute_in_shell!(channel, File.read(StaticData::SWAP))
+      ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
       channel.exec!(StaticData::GIT_CLONE_PROJECT)
       overwrite_configs(channel)
       channel.exec!('cd convert-service-testing/; docker-compose up -d') do |_ch, stream, data|

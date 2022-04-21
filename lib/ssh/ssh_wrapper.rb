@@ -55,7 +55,7 @@ class SshWrapper
   # @param [String] script The line containing the shell script
   # @param [String] shell Shell type (bash by default)
   # @return [Object]
-  def execute_in_shell!(session, script, shell = 'bash')
+  def exec_in_shell!(session, script, shell = 'bash')
     channel = session.open_channel do |ch|
       ch.exec("#{shell} -l") do |ch2, success|
         raise 'could not execute command' unless success
