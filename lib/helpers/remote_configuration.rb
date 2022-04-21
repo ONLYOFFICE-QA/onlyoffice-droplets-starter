@@ -20,17 +20,6 @@ class RemoteConfiguration
     @f_manager ||= FileManager.new
   end
 
-  def build_convert_service_testing
-    ssh do |channel|
-      ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
-      channel.exec!(StaticData::GIT_CLONE_PROJECT)
-      overwrite_configs(channel)
-      channel.exec!('cd convert-service-testing/; docker-compose up -d') do |_ch, stream, data|
-        $stdout << data if stream == :stdout
-      end
-    end
-  end
-
   # @param [Object] channel
   # @return [Object]
   def overwrite_configs(channel)
@@ -45,5 +34,15 @@ class RemoteConfiguration
     ssh.upload!(channel,
                 StaticData::ENV,
                 f_manager.overwrite(env, /''/, @spec_name))
+  end
+
+  # @return [SshWrapper]
+  def build_convert_service_testing
+    ssh do |channel|
+      ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
+      ssh.exec_with_logs!(channel, StaticData::GIT_CLONE_PROJECT)
+      overwrite_configs(channel)
+      ssh.exec_with_logs!(channel, 'cd convert-service-testing/; docker-compose up -d')
+    end
   end
 end

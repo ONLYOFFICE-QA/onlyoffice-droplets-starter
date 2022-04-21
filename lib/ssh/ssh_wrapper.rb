@@ -12,6 +12,15 @@ class SshWrapper
   end
 
   # @param [Object] session
+  # @param [Object] command
+  # @return [Object]
+  def exec_with_logs!(session, command)
+    session.exec!(command) do |_ch, stream, data|
+      $stdout << data if stream == :stdout
+    end
+  end
+
+  # @param [Object] session
   # @param [Object] path
   # @return [String]
   def download!(session, path)
