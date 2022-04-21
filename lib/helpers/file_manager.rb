@@ -16,7 +16,7 @@ class FileManager
     when Array
       if data.scan(pattern).length == changes.length
         changes.each do |path|
-          data = data.sub(pattern, "\"#{File.read("#{ENV['HOME']}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
+          data = data.sub(pattern, "\"#{File.read("#{ENV.fetch('HOME', nil)}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
           Logger.new(@stdout).info "#{path[:file]} is written"
         end
       end

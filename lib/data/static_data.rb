@@ -36,32 +36,32 @@ class StaticData
   GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
 
   def self.project_name
-    return ENV['PROJECT_NAME'] if ENV['PROJECT_NAME']
+    return ENV.fetch('PROJECT_NAME', nil) if ENV['PROJECT_NAME']
 
     File.read("#{Dir.home}/.do/project_name").rstrip
   end
 
   def self.ssh_key_id
-    return ENV['SSH_KEY_ID'] if ENV['SSH_KEY_ID']
+    return ENV.fetch('SSH_KEY_ID', nil) if ENV['SSH_KEY_ID']
 
     File.read("#{Dir.home}/.do/ssh_key_id").rstrip
   end
 
   def self.palladium_token
-    return ENV['PALLADIUM_TOKEN'] if ENV['PALLADIUM_TOKEN']
+    return ENV.fetch('PALLADIUM_TOKEN', nil) if ENV['PALLADIUM_TOKEN']
 
-    File.read("#{ENV['HOME']}/.palladium/token").rstrip
+    File.read("#{ENV.fetch('HOME', nil)}/.palladium/token").rstrip
   end
 
   def self.jwt_key
-    File.read("#{ENV['HOME']}/.documentserver/documentserver_jwt").rstrip
+    File.read("#{ENV.fetch('HOME', nil)}/.documentserver/documentserver_jwt").rstrip
   end
 
   def self.s3_private_key
-    File.read("#{ENV['HOME']}/.s3/private_key").rstrip
+    File.read("#{ENV.fetch('HOME', nil)}/.s3/private_key").rstrip
   end
 
   def self.s3_public_key
-    File.read("#{ENV['HOME']}/.s3/key").rstrip
+    File.read("#{ENV.fetch('HOME', nil)}/.s3/key").rstrip
   end
 end
