@@ -12,16 +12,16 @@ class FileManager
     case changes
     when String
       data = data.sub(pattern, "\"#{changes}\"")
-      logger.info 'is overwritten by the pattern'
+      logger.info("overwriting #{pattern} with #{changes}")
     when Array
       if data.scan(pattern).length == changes.length
         changes.each do |path|
           data = data.sub(pattern, "\"#{File.read("#{ENV.fetch('HOME', nil)}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
-          Logger.new(@stdout).info "#{path[:file]} is written"
+          logger.info("#{path[:file]} is written")
         end
       end
     else
-      logger.error 'Overwrite error'
+      raise 'changes data type is not supported by the method'
     end
     data
   end
