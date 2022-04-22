@@ -78,15 +78,15 @@ class SshWrapper
           $stderr.print data
         end
         # Set the terminal type
-        ch2.send_data 'export TERM=vt100n'
+        ch2.send_data("export TERM=vt100\n")
         # Output each command as if they were entered on the command line
         [script].flatten.each do |command|
-          ch2.send_data "#{command}n"
+          ch2.send_data "#{command}\n"
         end
         # Remember to exit or we'll hang!
-        ch2.send_data 'exit'
+        ch2.send_data "exit\n"
       end
     end
-    channel.close
+    channel.wait
   end
 end
