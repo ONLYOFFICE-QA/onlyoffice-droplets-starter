@@ -33,7 +33,7 @@ class StaticData
   ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env"
   SWAP = './lib/bash_scripts/swap.sh'
 
-  GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git'
+  GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git; echo "project is cloned"'
 
   def self.project_name
     return ENV.fetch('PROJECT_NAME', nil) if ENV['PROJECT_NAME']
