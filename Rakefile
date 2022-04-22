@@ -19,7 +19,7 @@ task :create_droplets, :container_count do |_t, args|
 end
 
 desc 'Docserver version entry format "7.0.0.0"'
-task :convert_run, :version do |_t, args|
+task :launch, :version do |_t, args|
   StaticData::SPEC_FILES.each do |spec|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
