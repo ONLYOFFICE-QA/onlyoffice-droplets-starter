@@ -27,6 +27,7 @@ class RemoteConfiguration
     ssh.upload!(channel,
                 StaticData::DOCKERFILE,
                 f_manager.overwrite(dockerfile, /""/, StaticData::PATHS_LIST))
+
     env = ssh.download!(channel, StaticData::ENV)
     ssh.upload!(channel,
                 StaticData::ENV,
