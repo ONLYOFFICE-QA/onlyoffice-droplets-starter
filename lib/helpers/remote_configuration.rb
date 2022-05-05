@@ -4,16 +4,17 @@ require_relative '../management'
 
 # Describer
 class RemoteConfiguration
-  attr_reader :version, :spec, :host
+  attr_reader :version, :spec, :host, :user
 
   def initialize(args)
     @host = args[:host]
+    @user = args[:user] || StaticData::DEFAULT_USER
     @version = args[:version]
     @spec_name = args[:spec]
   end
 
   def ssh(&block)
-    @ssh ||= SshWrapper.new(host, StaticData::DEFAULT_USER, {}, &block)
+    @ssh ||= SshWrapper.new(host, user, {}, &block)
   end
 
   def f_manager
