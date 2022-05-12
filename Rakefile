@@ -20,7 +20,7 @@ end
 
 desc 'Docserver version entry format "7.0.0.0"'
 task :launch, :version do |_t, args|
-  StaticData::SPEC_FILES.each do |spec|
+  StaticData::SPEC_FILES_LIST['conversion_by_format'] do |spec|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)

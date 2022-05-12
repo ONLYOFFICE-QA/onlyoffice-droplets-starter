@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 # class with some constants and static data
 class StaticData
   PROJECT_NAME = ''
@@ -18,16 +20,7 @@ class StaticData
     { dir: '.documentserver', file: 'documentserver_jwt' }
   ].freeze
 
-  SPEC_FILES = %w[check_open_docx_by_screen_spec.rb
-                  check_open_epub_by_screen_spec.rb
-                  check_open_fb2_by_screen_spec.rb
-                  check_open_odp_by_screen_spec.rb
-                  check_open_odt_by_screen_spec.rb
-                  check_open_pptx_by_screen_spec.rb
-                  check_open_xlsx_by_screen_spec.rb
-                  check_open_xlsb_by_screen_spec.rb
-                  check_open_ods_by_screen_spec.rb
-                  check_open_html_by_screen_spec.rb].freeze
+  SPEC_FILES_LIST = JSON.load_file("#{Dir.pwd}/lib/assets/spec_list.json")
 
   DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile"
   ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env"
