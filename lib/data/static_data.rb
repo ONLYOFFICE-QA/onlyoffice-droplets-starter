@@ -43,18 +43,18 @@ class StaticData
   def self.palladium_token
     return ENV.fetch('PALLADIUM_TOKEN', nil) if ENV['PALLADIUM_TOKEN']
 
-    File.read("#{ENV.fetch('HOME', nil)}/.palladium/token").rstrip
+    File.read("#{Dir.home}/.palladium/token").rstrip
   end
 
   def self.jwt_key
-    File.read("#{ENV.fetch('HOME', nil)}/.documentserver/documentserver_jwt").rstrip
+    File.read("#{Dir.home}/.documentserver/documentserver_jwt").rstrip
   end
 
   def self.s3_private_key
-    File.read("#{ENV.fetch('HOME', nil)}/.s3/private_key").rstrip
+    File.read("#{Dir.home}/.s3/private_key").rstrip
   end
 
   def self.s3_public_key
-    File.read("#{ENV.fetch('HOME', nil)}/.s3/key").rstrip
+    File.read("#{Dir.home}/.s3/key").rstrip
   end
 end
