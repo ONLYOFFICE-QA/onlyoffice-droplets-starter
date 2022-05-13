@@ -2,12 +2,19 @@
 
 require_relative '../management'
 
-# Describe
+# class for interacting with files
 class FileManager
-  # @param [Object] data
-  # @param [Object] pattern
-  # @param [Object] changes
-  # @return [Object]
+  # Methods to overwrite string
+  #
+  # If changes is a [String] then the first match in the pattern is found and overwritten
+  #
+  # However, if there is an [Array], then the number of matches
+  # found in the data is calculated and compared to the number
+  # of elements in the array
+  # @param [String] data - data to overwrite
+  # @param [String] pattern - pattern to overwrite
+  # @param [String, Array[String]] changes - changes to overwrite
+  # @return [String] data with changes
   def overwrite(data, pattern, changes)
     case changes
     when String

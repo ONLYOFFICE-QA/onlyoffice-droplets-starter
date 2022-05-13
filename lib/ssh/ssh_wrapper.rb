@@ -7,22 +7,32 @@ require_relative '../management'
 class SshWrapper
   attr_reader :ssh
 
+  # The standard means of starting a new SSH connection
+  #
+  # https://www.rubydoc.info/github/net-ssh/net-ssh/Net/SSH#start-class_method
+  # @param [Object] host Remote host to connect to
+  # @param [Object] user User to connect as
+  # @param [Object] options Options to pass to the underlying SSH client
+  # @param [Proc] block Block to execute on the new SSH connection
+  # @return [Net::SSH::Connection::Session] Returns a new SSH connection
   def initialize(host, user, options, &block)
     @ssh = Net::SSH.start(host, user, options, &block)
   end
 
-  # @param [Object] session
-  # @param [Object] command
-  # @return [Object]
+  # Execute a command on the remote host with log to stdout
+  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
+  # @param [String] command The command to execute
+  # @return [Object] Returns the output of the command
   def exec_with_logs!(session, command)
     session.exec!(command) do |_ch, stream, data|
       $stdout << data if stream == :stdout
     end
   end
 
-  # @param [Object] session
-  # @param [Object] path
-  # @return [String]
+  # Read a text file from the remote host and return it as a string
+  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
+  # @param [String] path The path to the file to upload
+  # @return [String] Returns the contents of the file
   def download!(session, path)
     io = StringIO.new
     session.sftp.connect do |sftp|
@@ -38,10 +48,11 @@ class SshWrapper
     io.string
   end
 
-  # @param [Object] session
-  # @param [Object] file_path
-  # @param [Object] data
-  # @return [Object]
+  # Upload a text file to the remote host as a current file
+  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
+  # @param [Object] file_path The path to the file to upload
+  # @param [Object] data The data to write to the file
+  # @return [Object] Returns the output of the command
   def upload!(session, file_path, data)
     session.sftp.connect do |sftp|
       io = StringIO.new(data.to_s)
@@ -60,10 +71,10 @@ class SshWrapper
   # to display characters to your screen.
   # For Macintoshes and IBM compatibles, "vt100" is usually the correct emulation. For Xterminals, use "xterm".
   #
-  # @param [Net::SSH::Connection::Session] session Open session access object (see doc)
-  # @param [String] script The line containing the shell script
+  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
+  # @param [String] script The script to execute
   # @param [String] shell Shell type (bash by default)
-  # @return [Object]
+  # @return [Object] Returns the output of the command
   def exec_in_shell!(session, script, shell = 'bash')
     channel = session.open_channel do |ch|
       ch.exec("#{shell} -l") do |ch2, success|

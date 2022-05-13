@@ -2,10 +2,12 @@
 
 require_relative '../management'
 
-# Describer
+# class to manage remote configuration
 class RemoteConfiguration
   attr_reader :version, :spec, :host, :user
 
+  # @param [Object] args Hash of arguments
+  # @return [Object] Returns a new instance of RemoteConfiguration
   def initialize(args)
     @host = args[:host]
     @user = args[:user] || StaticData::DEFAULT_USER
@@ -13,16 +15,17 @@ class RemoteConfiguration
     @spec_name = args[:spec]
   end
 
+  # @param [Proc] block Code with instructions for net-ssh gem
   def ssh(&block)
     @ssh ||= SshWrapper.new(host, user, {}, &block)
   end
 
+  # @return [Object] Returns a new instance of FileManager if doesn't exist
   def f_manager
     @f_manager ||= FileManager.new
   end
 
-  # @param [Object] channel
-  # @return [Object]
+  # @param [Net::SSH::Connection::Channel] channel Receives a current ssh connection
   def overwrite_configs(channel)
     dockerfile = ssh.download!(channel, StaticData::DOCKERFILE)
     ssh.upload!(channel,
@@ -38,7 +41,7 @@ class RemoteConfiguration
                 f_manager.overwrite(env, /''/, @spec_name))
   end
 
-  # @return [SshWrapper]
+  # Configuration, build and run convert service project
   def build_convert_service_testing
     ssh do |channel|
       ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
