@@ -21,7 +21,7 @@ class FileManager
         end
       end
     else
-      raise 'changes data type is not supported by the method'
+      raise 'Changes data type is not supported by the method'
     end
     data
   end
