@@ -11,8 +11,9 @@ class FileManager
   # However, if there is an [Array], then the number of matches
   # found in the data is calculated and compared to the number
   # of elements in the array
+  #
   # @param [String] data - data to overwrite
-  # @param [String] pattern - pattern to overwrite
+  # @param [Regexp] pattern - pattern to overwrite
   # @param [String, Array[String]] changes - changes to overwrite
   # @return [String] data with changes
   def overwrite(data, pattern, changes)

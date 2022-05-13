@@ -25,23 +25,24 @@ class RemoteConfiguration
     @f_manager ||= FileManager.new
   end
 
-  # @param [Net::SSH::Connection::Channel] channel Receives a current ssh connection
-  def overwrite_configs(channel)
-    dockerfile = ssh.download!(channel, StaticData::DOCKERFILE)
-    ssh.upload!(channel,
+  # @param [Net::SSH::Connection::Session] session SSH session
+  def overwrite_configs(session)
+    dockerfile = ssh.download!(session, StaticData::DOCKERFILE)
+    ssh.upload!(session,
                 StaticData::DOCKERFILE,
                 f_manager.overwrite(dockerfile, /""/, StaticData::PATHS_LIST))
 
-    env = ssh.download!(channel, StaticData::ENV)
-    ssh.upload!(channel,
+    env = ssh.download!(session, StaticData::ENV)
+    ssh.upload!(session,
                 StaticData::ENV,
                 env = f_manager.overwrite(env, /latest/, @version))
-    ssh.upload!(channel,
+    ssh.upload!(session,
                 StaticData::ENV,
                 f_manager.overwrite(env, /''/, @spec_name))
   end
 
   # Configuration, build and run convert service project
+  #
   def build_convert_service_testing
     ssh do |channel|
       ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
