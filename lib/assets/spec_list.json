@@ -1,0 +1,36 @@
+{
+  "conversion_by_format": [
+    "check_open_docx_by_screen_spec.rb",
+    "check_open_epub_by_screen_spec.rb",
+    "check_open_fb2_by_screen_spec.rb",
+    "check_open_odp_by_screen_spec.rb",
+    "check_open_odt_by_screen_spec.rb",
+    "check_open_pptx_by_screen_spec.rb",
+    "check_open_xlsx_by_screen_spec.rb",
+    "check_open_xlsb_by_screen_spec.rb",
+    "check_open_ods_by_screen_spec.rb",
+    "check_open_html_by_screen_spec.rb"
+  ],
+  "functional/documents": [
+    "doc_to_docx_functional_spec.rb",
+    "docx_to_odt_functional_spec.rb",
+    "docx_to_rtf_functional_spec.rb",
+    "odt_to_docx_functional_spec.rb",
+    "pdf_to_docx_functional_spec.rb",
+    "rtf_to_docx_functional_spec.rb",
+    "xps_to_docx_functional_spec.rb"
+    ],
+  "functional/presentations": [
+    "odp_to_pptx_functional_spec.rb",
+    "ppt_to_pptx_functional_spec.rb",
+    "pptx_to_odp_functional_spec.rb"
+    ],
+  "functional/spreadsheets": [
+    "ods_to_csv_functional_spec.rb",
+    "ods_to_xlsx_functional_spec.rb",
+    "xls_to_csv_functional_spec.rb",
+    "xls_to_xlsx_functional_spec.rb",
+    "xlsx_to_csv_functional_spec.rb",
+    "xlsx_to_ods_functional_spec.rb"
+    ]
+}
