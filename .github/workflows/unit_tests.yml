@@ -3,6 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+---
 name: Unit_tests
 
 on: [push]
@@ -29,7 +30,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: true
 
       - name: RuboCop
         run: bundle exec rubocop
