@@ -34,6 +34,6 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           run: |
             gem install bundler
-            bundle install --jobs 4 --retry 3
+            bundle install --jobs 4 --retry 3 --with development
       - name: Check source files using `rubocop`
         run: rubocop
