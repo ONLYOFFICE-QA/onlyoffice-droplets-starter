@@ -20,8 +20,8 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        ruby-version: [ '3.0', '3.1' ]
-        experimental: [ false ]
+        ruby-version: ['3.0', '3.1']
+        experimental: [false]
         include:
           - ruby: head
             experimental: true
