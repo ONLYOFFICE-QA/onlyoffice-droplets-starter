@@ -23,7 +23,7 @@ GEM
     faraday (2.3.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (2.0.2)
+    faraday-net_http (2.0.3)
     ice_nine (0.11.2)
     kartograph (0.2.8)
     net-sftp (3.0.0)
