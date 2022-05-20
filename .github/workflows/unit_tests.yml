@@ -5,13 +5,7 @@
 
 name: Unit_tests
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-permissions:
-  contents: read
+on: [push]
 
 jobs:
   test:
