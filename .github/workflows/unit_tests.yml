@@ -1,0 +1,35 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+---
+name: Unit_tests
+
+# yamllint disable-line rule:truthy
+on: [push]
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      matrix:
+        ruby-version: ['3.0', '3.1']
+        experimental: [false]
+        include:
+          - ruby: head
+            experimental: true
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: true
+
+      - name: RuboCop
+        run: bundle exec rubocop

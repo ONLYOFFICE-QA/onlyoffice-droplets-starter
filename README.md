@@ -2,17 +2,17 @@
 
 ## Key generation
 
-### The first step is to add the ssh key to your DO account
-    
+### Add the ssh key to your DO account
+
 [Digital ocean account security](https://cloud.digitalocean.com/account/security)
 
 >You find a guide on the website DO
 
-### Second step you'll need to generate an access token in DigitalOcean's control panel
+### You'll need to generate an access token in DigitalOcean's control panel
 
 [Account api token](https://cloud.digitalocean.com/settings/applications)
 
-### After add digitalocean API token in file:
+### After add digitalocean API token in file
 
 ```bash
 ~/.do/access_token
@@ -56,13 +56,14 @@ curl -X GET \
   | jq
 ```
 
-In the output of the script copy the id value for your ssh and set the value in the file:
+In the output of the script copy the id value
+for your ssh and set the value in the file:
 
 ```bash
 ~/.do/ssh_key_id
 ```
 
-### Finally for configuration add the document server version to the bash script:
+### Finally for configuration add the document server version to the bash script
 
 ```bash
 ./lib/bash_script/script.sh

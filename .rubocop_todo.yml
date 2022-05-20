@@ -8,10 +8,12 @@
 
 # Offense count: 2
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
+---
 Metrics/AbcSize:
   Max: 24
 
 # Offense count: 4
+# yamllint disable-line rule:line-length
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, IgnoredMethods.
 Metrics/MethodLength:
   Max: 18
