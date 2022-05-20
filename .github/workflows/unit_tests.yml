@@ -6,8 +6,8 @@
 ---
 name: Unit_tests
 
-on: [push] # yamllint disable-line rule:truthy
-
+# yamllint disable-line rule:truthy
+on: [push]
 jobs:
   test:
 

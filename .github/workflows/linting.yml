@@ -1,6 +1,8 @@
 ---
 name: Linting
-on: # yamllint disable-line rule:truthy
+
+# yamllint disable-line rule:truthy
+on:
   - pull_request
 jobs:
   yamllint:
