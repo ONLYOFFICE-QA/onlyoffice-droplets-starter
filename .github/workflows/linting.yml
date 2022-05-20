@@ -1,0 +1,16 @@
+name: Linting
+on:
+  - pull_request
+jobs:
+  markdownlint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      - name: Check markdown files using `markdownlint`
+        run: |
+          npm install -g markdownlint-cli
+          markdownlint *.md
