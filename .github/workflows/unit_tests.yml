@@ -28,11 +28,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          # runs 'bundle install' and caches installed gems automatically
-          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      - name: Rspec
+        run: rspec --pattern "spec/**/unit/*_spec.rb"
 
       - name: RuboCop
         run: bundle exec rubocop
-
-      - name: Rspec
-        run: rspec
