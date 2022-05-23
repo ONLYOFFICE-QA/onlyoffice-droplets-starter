@@ -33,7 +33,7 @@ class RemoteConfiguration
     dockerfile = ssh.download!(session, StaticData::DOCKERFILE)
     ssh.upload!(session,
                 StaticData::DOCKERFILE,
-                f_manager.writes_tokens_by_path_array(dockerfile, /""/, StaticData::PATHS_LIST))
+                f_manager.writes_tokens_by_path_array(dockerfile, /""/, StaticData::PATH_ARRAY))
 
     env = ssh.download!(session, StaticData::ENV)
     ssh.upload!(session,
