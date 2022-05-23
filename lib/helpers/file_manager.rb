@@ -4,33 +4,48 @@ require_relative '../management'
 
 # class for interacting with files
 class FileManager
-  # Methods to overwrite string
-  #
-  # If changes is a [String] then the first match in the pattern is found and overwritten
-  #
-  # However, if there is an [Array], then the number of matches
-  # found in the data is calculated and compared to the number
-  # of elements in the array
-  #
-  # @param [String] data - data to overwrite
-  # @param [Regexp] pattern - pattern to overwrite
-  # @param [String, Array[String]] changes - changes to overwrite
+  # The method overwrites a substring in the pattern
+  # and writes a log and returns the result
+  # @param [String] data
+  # @param [Regexp] pattern
+  # @param [String] changes
   # @return [String] data with changes
   def overwrite(data, pattern, changes)
-    case changes
-    when String
-      data = data.sub(pattern, "\"#{changes}\"")
-      logger.info("overwriting #{pattern} with #{changes}")
-    when Array
-      if data.scan(pattern).length == changes.length
-        changes.each do |path|
-          data = data.sub(pattern, "\"#{File.read("#{Dir.home}/#{path[:dir]}/#{path[:file]}").rstrip}\"")
-          logger.info("#{path[:file]} is written")
-        end
+    data = data.sub(pattern, "#{changes}")
+    logger.info("overwriting #{pattern} with #{changes}")
+    data
+  end
+
+  # Writes the tokens by reading the paths from the local machine
+  # matching the found values in order
+  #
+  # The path array must be organized as:
+  # An array, each element of which is a hash containing two values
+  #
+  # [{ dir: 'dir_relative_HOME', file: 'file name' }, ... , ...]
+  #
+  # If the number of matches does not equal the number of paths,
+  # then the method will return the original data
+  #
+  # @param [String] data data to be written
+  # @param [Regexp] pattern pattern to be replaced
+  # @param [String] home global directory
+  # @param [Array] arr_paths array of paths
+  # @return [String] data with changes
+  def writes_tokens_by_path_array(data, pattern, home = Dir.home, arr_paths)
+    if data.scan(pattern).length == arr_paths.length
+      arr_paths.each do |path|
+        token = File.read("#{home}/#{path[:dir]}/#{path[:file]}").rstrip
+        data = data.sub(pattern, wrap_in_double_quotes(token))
+        logger.info("#{path[:file]} written")
       end
-    else
-      raise 'Changes data type is not supported by the method'
     end
     data
+  end
+
+  # @param [String] string string to be wrapped
+  # @return [String (frozen)] string wrapped in double quotes
+  def wrap_in_double_quotes(string)
+    %Q{"#{string}"}
   end
 end
