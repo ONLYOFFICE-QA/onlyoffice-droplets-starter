@@ -12,13 +12,13 @@ describe FileManager do
   end
 
   it 'should be able wrap in double quotes' do
-    expect(f_manager.wrap_in_double_quotes('test')).to eq(%Q{"test"})
+    expect(f_manager.wrap_in_double_quotes('test')).to eq(%("test"))
   end
 
   it 'should be able to overwrite Array' do
     expect(f_manager.writes_tokens_by_path_array('""',
                                                  /""/,
-                                                 Dir.pwd,
-                                                 arr_path)).to eq(%Q{"test"})
+                                                 arr_path,
+                                                 Dir.pwd)).to eq(%("test"))
   end
 end

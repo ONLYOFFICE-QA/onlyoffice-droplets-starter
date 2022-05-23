@@ -11,7 +11,7 @@ class FileManager
   # @param [String] changes
   # @return [String] data with changes
   def overwrite(data, pattern, changes)
-    data = data.sub(pattern, "#{changes}")
+    data = data.sub(pattern, changes.to_s)
     logger.info("overwriting #{pattern} with #{changes}")
     data
   end
@@ -32,7 +32,7 @@ class FileManager
   # @param [String] home global directory
   # @param [Array] arr_paths array of paths
   # @return [String] data with changes
-  def writes_tokens_by_path_array(data, pattern, home = Dir.home, arr_paths)
+  def writes_tokens_by_path_array(data, pattern, arr_paths, home = Dir.home)
     if data.scan(pattern).length == arr_paths.length
       arr_paths.each do |path|
         token = File.read("#{home}/#{path[:dir]}/#{path[:file]}").rstrip
@@ -46,6 +46,6 @@ class FileManager
   # @param [String] string string to be wrapped
   # @return [String (frozen)] string wrapped in double quotes
   def wrap_in_double_quotes(string)
-    %Q{"#{string}"}
+    %("#{string}")
   end
 end
