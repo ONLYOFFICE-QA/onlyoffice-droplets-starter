@@ -16,29 +16,32 @@ class RemoteConfiguration
   end
 
   # @param [Proc] block Code with instructions for net-ssh gem
+  #
   def ssh(&block)
     @ssh ||= SshWrapper.new(host, user, {}, &block)
   end
 
   # @return [Object] Returns a new instance of FileManager if doesn't exist
+  #
   def f_manager
     @f_manager ||= FileManager.new
   end
 
   # @param [Net::SSH::Connection::Session] session SSH session
+  #
   def overwrite_configs(session)
     dockerfile = ssh.download!(session, StaticData::DOCKERFILE)
     ssh.upload!(session,
                 StaticData::DOCKERFILE,
-                f_manager.overwrite(dockerfile, /""/, StaticData::PATHS_LIST))
+                f_manager.writes_tokens_by_path_array(dockerfile, /""/, StaticData::PATH_ARRAY))
 
     env = ssh.download!(session, StaticData::ENV)
     ssh.upload!(session,
                 StaticData::ENV,
-                env = f_manager.overwrite(env, /latest/, @version))
+                env = f_manager.overwrite(env, /latest/, f_manager.wrap_in_double_quotes(@version)))
     ssh.upload!(session,
                 StaticData::ENV,
-                f_manager.overwrite(env, /''/, @spec_name))
+                f_manager.overwrite(env, /''/, f_manager.wrap_in_double_quotes(@spec_name)))
   end
 
   # Configuration, build and run convert service project

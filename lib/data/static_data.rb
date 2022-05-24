@@ -13,7 +13,7 @@ class StaticData
 
   DEFAULT_USER = 'root'
 
-  PATHS_LIST = [
+  PATH_ARRAY = [
     { dir: '.s3', file: 'key' },
     { dir: '.s3', file: 'private_key' },
     { dir: '.palladium', file: 'token' },

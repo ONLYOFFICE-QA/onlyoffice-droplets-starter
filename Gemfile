@@ -13,9 +13,11 @@ gem 'net-sftp'
 gem 'net-ssh'
 gem 'onlyoffice_digitalocean_wrapper'
 gem 'rake'
+gem 'rspec'
 
 group :development do
   gem 'rubocop'
   gem 'rubocop-performance'
   gem 'rubocop-rake'
+  gem 'rubocop-rspec'
 end
