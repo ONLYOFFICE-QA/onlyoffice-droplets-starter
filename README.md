@@ -2,7 +2,8 @@
 
 ## Key generation
 
-1. Add the [ssh key](https://cloud.digitalocean.com/account/security) to your DO account
+1. Add the [ssh key](https://cloud.digitalocean.com/account/security)
+   to your DO account
 
 2. You'll need to generate an access token in DigitalOcean's control panel
 
