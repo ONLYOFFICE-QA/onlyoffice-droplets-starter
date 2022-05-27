@@ -11,6 +11,8 @@
 
 3. After add digitalocean API token in file
 
+   **WARNING**: Do not give the token to third parties and do not put it on github!
+
     ```bash
       ~/.do/access_token
     ```
