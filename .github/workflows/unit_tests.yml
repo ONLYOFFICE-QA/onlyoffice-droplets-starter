@@ -18,12 +18,10 @@ jobs:
         ruby-version: ['3.0', '3.1']
         experimental: [false]
         include:
-          - ruby: head
+          - ruby-version: head
             experimental: true
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
         with:
