@@ -20,6 +20,8 @@ class StaticData
     { dir: '.documentserver', file: 'documentserver_jwt' }
   ].freeze
 
+  TMP = "#{Dir.pwd}/tmp"
+
   SPEC_FILES_LIST = JSON.load_file("#{Dir.pwd}/lib/assets/spec_list.json")
 
   DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile"

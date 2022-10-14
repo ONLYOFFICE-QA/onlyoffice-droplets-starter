@@ -12,7 +12,7 @@ class RemoteConfiguration
     @host = args[:host]
     @user = args[:user] || StaticData::DEFAULT_USER
     @version = args[:version]
-    @spec_name = args[:spec]
+    @spec = args[:spec]
   end
 
   # @param [Proc] block Code with instructions for net-ssh gem
@@ -27,21 +27,28 @@ class RemoteConfiguration
     @f_manager ||= FileManager.new
   end
 
-  # @param [Net::SSH::Connection::Session] session SSH session
+  # Method for overwriting configurations
+  # to start convert_service_testing project
   #
-  def overwrite_configs(session)
-    dockerfile = ssh.download!(session, StaticData::DOCKERFILE)
-    ssh.upload!(session,
-                StaticData::DOCKERFILE,
-                f_manager.writes_tokens_by_path_array(dockerfile, /""/, StaticData::PATH_ARRAY))
-
-    env = ssh.download!(session, StaticData::ENV)
-    ssh.upload!(session,
-                StaticData::ENV,
-                env = f_manager.overwrite(env, /latest/, f_manager.wrap_in_double_quotes(@version)))
-    ssh.upload!(session,
-                StaticData::ENV,
-                f_manager.overwrite(env, /''/, f_manager.wrap_in_double_quotes(@spec_name)))
+  def overwrite_configs
+    ssh.sftp_get(StaticData::DOCKERFILE,
+                 "#{StaticData::TMP}/Dockerfile",
+                 StaticData::DEFAULT_USER,
+                 host)
+    file = File.read("#{StaticData::TMP}/Dockerfile")
+    file = f_manager.writes_tokens_by_path_array(file, /""/, StaticData::PATH_ARRAY)
+    File.write("#{StaticData::TMP}/Dockerfile", file)
+    ssh.sftp_put("#{StaticData::TMP}/Dockerfile",
+                 StaticData::DOCKERFILE,
+                 StaticData::DEFAULT_USER,
+                 host)
+    ssh.sftp_get(StaticData::ENV, "#{StaticData::TMP}/.env", StaticData::DEFAULT_USER, host)
+    file = File.read("#{Dir.pwd}/tmp/.env")
+    file = f_manager.overwrite(file, /latest/, f_manager.wrap_in_double_quotes(@version))
+    file = f_manager.overwrite(file, /''/, f_manager.wrap_in_double_quotes(@spec))
+    File.write("#{StaticData::TMP}/.env", file)
+    ssh.sftp_put("#{StaticData::TMP}/.env", StaticData::ENV, StaticData::DEFAULT_USER, host)
+    FileUtils.rm %w[Dockerfile .env]
   end
 
   # Configuration, build and run convert service project
@@ -50,7 +57,7 @@ class RemoteConfiguration
     ssh do |channel|
       ssh.exec_in_shell!(channel, File.read(StaticData::SWAP))
       ssh.exec_with_logs!(channel, StaticData::GIT_CLONE_PROJECT)
-      overwrite_configs(channel)
+      overwrite_configs
       ssh.exec_with_logs!(channel, 'cd convert-service-testing/; docker-compose up -d')
     end
   end

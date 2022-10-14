@@ -29,39 +29,26 @@ class SshWrapper
     end
   end
 
-  # Read a text file from the remote host and return it as a string
-  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
-  # @param [String] path The path to the file to upload
-  # @return [String] Returns the contents of the file
-  def download!(session, path)
-    io = StringIO.new
-    session.sftp.connect do |sftp|
-      sftp.download!(path, io)
-    rescue Net::SFTP::Operations::StatusException => e
-      logger.error e.message
-    ensure
-      if io.string.empty?
-        logger.error 'Response data empty'
-        sftp.close
-      end
-    end
-    io.string
+  # @param [Object] remote_path
+  # @param [Object] host_path
+  # @param [Object] user
+  # @param [Object] ip
+  #
+  # @return [Integer]
+  def sftp_get(remote_path, host_path, user, ip)
+    `echo "get #{remote_path} #{host_path}" | sftp #{user}@#{ip}`
+    sleep 5 # Timeout between commands to not be banned by sftp
   end
 
-  # Upload a text file to the remote host as a current file
-  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
-  # @param [Object] file_path The path to the file to upload
-  # @param [Object] data The data to write to the file
-  # @return [Object] Returns the output of the command
-  def upload!(session, file_path, data)
-    session.sftp.connect do |sftp|
-      io = StringIO.new(data.to_s)
-      begin
-        sftp.upload!(io, file_path)
-      rescue Net::SFTP::Operations::StatusException => e
-        logger.error e.message
-      end
-    end
+  # @param [Object] host_path
+  # @param [Object] remote_path
+  # @param [Object] user
+  # @param [Object] ip
+  #
+  # @return [Integer]
+  def sftp_put(host_path, remote_path, user, ip)
+    `echo "put #{host_path} #{remote_path}" | sftp #{user}@#{ip}`
+    sleep 5 # Timeout between commands to not be banned by sftp
   end
 
   # A method for strictly executing bash scripts via ssh, taking terminal type into account
