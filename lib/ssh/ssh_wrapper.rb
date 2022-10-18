@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'English'
 require_relative '../management'
 
 # Class for interaction with net/ssh
@@ -34,10 +35,11 @@ class SshWrapper
   # @param [Object] user
   # @param [Object] ip
   #
-  # @return [Integer]
+  # @return [Object] recursion
   def sftp_get(remote_path, host_path, user, ip)
-    `echo "get #{remote_path} #{host_path}" | sftp #{user}@#{ip}`
+    system("echo \"get #{remote_path} #{host_path}\" | sftp #{user}@#{ip}")
     sleep 5 # Timeout between commands to not be banned by sftp
+    sftp_get(remote_path, host_path, user, ip) unless $CHILD_STATUS.success?
   end
 
   # @param [Object] host_path
@@ -45,10 +47,11 @@ class SshWrapper
   # @param [Object] user
   # @param [Object] ip
   #
-  # @return [Integer]
+  # @return [Object] recursion
   def sftp_put(host_path, remote_path, user, ip)
-    `echo "put #{host_path} #{remote_path}" | sftp #{user}@#{ip}`
+    system("echo \"put #{host_path} #{remote_path}\" | sftp #{user}@#{ip}")
     sleep 5 # Timeout between commands to not be banned by sftp
+    sftp_put(host_path, remote_path, user, ip) unless $CHILD_STATUS.success?
   end
 
   # A method for strictly executing bash scripts via ssh, taking terminal type into account

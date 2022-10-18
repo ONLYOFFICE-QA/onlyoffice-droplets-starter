@@ -8,6 +8,7 @@ class RemoteConfiguration
 
   # @param [Object] args Hash of arguments
   # @return [Object] Returns a new instance of RemoteConfiguration
+  #
   def initialize(args)
     @host = args[:host]
     @user = args[:user] || StaticData::DEFAULT_USER
@@ -16,6 +17,7 @@ class RemoteConfiguration
   end
 
   # @param [Proc] block Code with instructions for net-ssh gem
+  # @return [SshWrapper]
   #
   def ssh(&block)
     @ssh ||= SshWrapper.new(host, user, {}, &block)
@@ -27,28 +29,40 @@ class RemoteConfiguration
     @f_manager ||= FileManager.new
   end
 
+  # @param [Object] tmpdir
+  # @return [Integer]
+  #
+  def overwrite_dockerfile(tmpdir)
+    file = File.read("#{tmpdir}/Dockerfile")
+    file = f_manager.writes_tokens_by_path_array(file, /""/, StaticData::PATH_ARRAY)
+    File.write("#{tmpdir}/Dockerfile", file)
+  end
+
+  # @param [Object] tmpdir
+  # @return [Integer]
+  #
+  def overwrite_dot_env(tmpdir)
+    file = File.read("#{tmpdir}/.env")
+    file = f_manager.overwrite(file, /latest/, f_manager.wrap_in_double_quotes(@version))
+    file = f_manager.overwrite(file, /''/, f_manager.wrap_in_double_quotes(@spec))
+    File.write("#{tmpdir}/.env", file)
+  end
+
   # Method for overwriting configurations
   # to start convert_service_testing project
   #
+  # @return [TrueClass, FalseClass]
+  #
   def overwrite_configs
-    ssh.sftp_get(StaticData::DOCKERFILE,
-                 "#{StaticData::TMP}/Dockerfile",
-                 StaticData::DEFAULT_USER,
-                 host)
-    file = File.read("#{StaticData::TMP}/Dockerfile")
-    file = f_manager.writes_tokens_by_path_array(file, /""/, StaticData::PATH_ARRAY)
-    File.write("#{StaticData::TMP}/Dockerfile", file)
-    ssh.sftp_put("#{StaticData::TMP}/Dockerfile",
-                 StaticData::DOCKERFILE,
-                 StaticData::DEFAULT_USER,
-                 host)
-    ssh.sftp_get(StaticData::ENV, "#{StaticData::TMP}/.env", StaticData::DEFAULT_USER, host)
-    file = File.read("#{Dir.pwd}/tmp/.env")
-    file = f_manager.overwrite(file, /latest/, f_manager.wrap_in_double_quotes(@version))
-    file = f_manager.overwrite(file, /''/, f_manager.wrap_in_double_quotes(@spec))
-    File.write("#{StaticData::TMP}/.env", file)
-    ssh.sftp_put("#{StaticData::TMP}/.env", StaticData::ENV, StaticData::DEFAULT_USER, host)
-    FileUtils.rm %w[Dockerfile .env]
+    Dir.mktmpdir do |tmpdir|
+      ssh.sftp_get(StaticData::DOCKERFILE, "#{tmpdir}/Dockerfile", StaticData::DEFAULT_USER, host)
+      overwrite_dockerfile(tmpdir)
+      ssh.sftp_put("#{tmpdir}/Dockerfile", StaticData::DOCKERFILE, StaticData::DEFAULT_USER, host)
+
+      ssh.sftp_get(StaticData::ENV, "#{tmpdir}/.env", StaticData::DEFAULT_USER, host)
+      overwrite_dot_env(tmpdir)
+      ssh.sftp_put("#{tmpdir}/.env", StaticData::ENV, StaticData::DEFAULT_USER, host)
+    end
   end
 
   # Configuration, build and run convert service project
