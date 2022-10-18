@@ -7,6 +7,8 @@
 # versions of RuboCop, may require this file to be generated again.
 
 # Offense count: 1
+# yamllint disable-line rule:line-length
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, AllowedMethods, AllowedPatterns, IgnoredMethods.
+# yamllint disable-line rule:document-start
 Metrics/MethodLength:
   Max: 17
