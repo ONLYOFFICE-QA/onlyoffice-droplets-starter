@@ -18,15 +18,11 @@ class FileManager
 
   # Writes the tokens by reading the paths from the local machine
   # matching the found values in order
-  #
   # The path array must be organized as:
   # An array, each element of which is a hash containing two values
-  #
   # [{ dir: 'dir_relative_HOME', file: 'file name' }, ... , ...]
-  #
   # If the number of matches does not equal the number of paths,
   # then the method will return the original data
-  #
   # @param [String] data data to be written
   # @param [Regexp] pattern pattern to be replaced
   # @param [String] home global directory

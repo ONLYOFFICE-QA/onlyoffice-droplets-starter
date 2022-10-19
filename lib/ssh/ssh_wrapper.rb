@@ -9,7 +9,6 @@ class SshWrapper
   attr_reader :ssh
 
   # The standard means of starting a new SSH connection
-  #
   # https://www.rubydoc.info/github/net-ssh/net-ssh/Net/SSH#start-class_method
   # @param [Object] host Remote host to connect to
   # @param [Object] user User to connect as
@@ -34,7 +33,6 @@ class SshWrapper
   # @param [Object] host_path
   # @param [Object] user
   # @param [Object] ip
-  #
   # @return [Object] recursion
   def sftp_get(remote_path, host_path, user, ip)
     system("echo \"get #{remote_path} #{host_path}\" | sftp #{user}@#{ip}")
@@ -46,7 +44,6 @@ class SshWrapper
   # @param [Object] remote_path
   # @param [Object] user
   # @param [Object] ip
-  #
   # @return [Object] recursion
   def sftp_put(host_path, remote_path, user, ip)
     system("echo \"put #{host_path} #{remote_path}\" | sftp #{user}@#{ip}")
@@ -55,12 +52,10 @@ class SshWrapper
   end
 
   # A method for strictly executing bash scripts via ssh, taking terminal type into account
-  #
   # @option send_data 'export TERM=vt100n'
   # The value of the TERM environmental variable determines what terminal emulation will be used
   # to display characters to your screen.
   # For Macintoshes and IBM compatibles, "vt100" is usually the correct emulation. For Xterminals, use "xterm".
-  #
   # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
   # @param [String] script The script to execute
   # @param [String] shell Shell type (bash by default)
