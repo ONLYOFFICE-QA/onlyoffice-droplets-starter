@@ -28,6 +28,19 @@ class SshWrapper
     end
   end
 
+  # Using interactive sftp commands
+  # without interactive mode.
+  # One command - one ssh connection
+  # @param [Object] command
+  # @param [Object] user
+  # @param [Object] ip
+  # @return [FalseClass, TrueClass, null, nil]
+  def sftp_command(user, ip, command)
+    system("#{command} | sftp #{user}@#{ip}") do
+      sleep 5 # Timeout between commands to not be banned by sftp
+    end
+  end
+
   # @param [Object] remote_path
   # @param [Object] host_path
   # @param [Object] user
@@ -35,8 +48,7 @@ class SshWrapper
   # @return [Integer]
   def sftp_get(remote_path, host_path, user, ip)
     5.times do
-      result = system("echo \"get #{remote_path} #{host_path}\" | sftp #{user}@#{ip}")
-      sleep 5 # Timeout between commands to not be banned by sftp
+      result = sftp_command(user, ip, %(echo "get #{remote_path} #{host_path}"))
 
       raise StandardError, 'Failed to retrieve file' if result.nil?
 
@@ -51,8 +63,7 @@ class SshWrapper
   # @return [Integer]
   def sftp_put(host_path, remote_path, user, ip)
     5.times do
-      result = system("echo \"put #{host_path} #{remote_path}\" | sftp #{user}@#{ip}")
-      sleep 5 # Timeout between commands to not be banned by sftp
+      result = sftp_command(user, ip, %(echo "put #{host_path} #{remote_path}"))
 
       raise StandardError, 'Failed to put file' if result.nil?
 
