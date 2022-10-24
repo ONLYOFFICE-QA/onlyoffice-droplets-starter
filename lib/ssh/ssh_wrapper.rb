@@ -8,7 +8,6 @@ class SshWrapper
   attr_reader :ssh
 
   # The standard means of starting a new SSH connection
-  #
   # https://www.rubydoc.info/github/net-ssh/net-ssh/Net/SSH#start-class_method
   # @param [Object] host Remote host to connect to
   # @param [Object] user User to connect as
@@ -29,48 +28,28 @@ class SshWrapper
     end
   end
 
-  # Read a text file from the remote host and return it as a string
-  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
-  # @param [String] path The path to the file to upload
-  # @return [String] Returns the contents of the file
-  def download!(session, path)
-    io = StringIO.new
-    session.sftp.connect do |sftp|
-      sftp.download!(path, io)
-    rescue Net::SFTP::Operations::StatusException => e
-      logger.error e.message
-    ensure
-      if io.string.empty?
-        logger.error 'Response data empty'
-        sftp.close
-      end
-    end
-    io.string
-  end
+  # Using interactive sftp commands
+  # without interactive mode.
+  # One command - one ssh connection
+  # @param [Object] command
+  # @param [Object] user
+  # @param [Object] ip
+  # @return [Integer]
+  def sftp_command(user, ip, command)
+    5.times do
+      result = system("#{command} | sftp #{user}@#{ip}")
 
-  # Upload a text file to the remote host as a current file
-  # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
-  # @param [Object] file_path The path to the file to upload
-  # @param [Object] data The data to write to the file
-  # @return [Object] Returns the output of the command
-  def upload!(session, file_path, data)
-    session.sftp.connect do |sftp|
-      io = StringIO.new(data.to_s)
-      begin
-        sftp.upload!(io, file_path)
-      rescue Net::SFTP::Operations::StatusException => e
-        logger.error e.message
-      end
+      raise StandardError, 'Failed to retrieve file' if result.nil?
+
+      result ? break : sleep(20) # Waiting if the error "Connection refused"
     end
   end
 
   # A method for strictly executing bash scripts via ssh, taking terminal type into account
-  #
   # @option send_data 'export TERM=vt100n'
   # The value of the TERM environmental variable determines what terminal emulation will be used
   # to display characters to your screen.
   # For Macintoshes and IBM compatibles, "vt100" is usually the correct emulation. For Xterminals, use "xterm".
-  #
   # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
   # @param [String] script The script to execute
   # @param [String] shell Shell type (bash by default)
