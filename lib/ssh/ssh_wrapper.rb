@@ -34,40 +34,14 @@ class SshWrapper
   # @param [Object] command
   # @param [Object] user
   # @param [Object] ip
-  # @return [FalseClass, TrueClass, null, nil]
-  def sftp_command(user, ip, command)
-    system("#{command} | sftp #{user}@#{ip}") do
-      sleep 5 # Timeout between commands to not be banned by sftp
-    end
-  end
-
-  # @param [Object] remote_path
-  # @param [Object] host_path
-  # @param [Object] user
-  # @param [Object] ip
   # @return [Integer]
-  def sftp_get(remote_path, host_path, user, ip)
+  def sftp_command(user, ip, command)
     5.times do
-      result = sftp_command(user, ip, %(echo "get #{remote_path} #{host_path}"))
+      result = system("#{command} | sftp #{user}@#{ip}")
 
       raise StandardError, 'Failed to retrieve file' if result.nil?
 
-      break if result
-    end
-  end
-
-  # @param [Object] host_path
-  # @param [Object] remote_path
-  # @param [Object] user
-  # @param [Object] ip
-  # @return [Integer]
-  def sftp_put(host_path, remote_path, user, ip)
-    5.times do
-      result = sftp_command(user, ip, %(echo "put #{host_path} #{remote_path}"))
-
-      raise StandardError, 'Failed to put file' if result.nil?
-
-      break if result
+      result ? break : sleep(20) # Waiting if the error "Connection refused"
     end
   end
 

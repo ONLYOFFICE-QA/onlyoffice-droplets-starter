@@ -47,13 +47,17 @@ class RemoteConfiguration
   # to start convert_service_testing project
   def overwrite_configs
     Dir.mktmpdir do |tmpdir|
-      ssh.sftp_get(StaticData::DOCKERFILE, "#{tmpdir}/Dockerfile", StaticData::DEFAULT_USER, host)
+      ssh.sftp_command(StaticData::DEFAULT_USER, host,
+                       %(echo "get #{StaticData::DOCKERFILE} #{tmpdir}/Dockerfile"))
       overwrite_dockerfile("#{tmpdir}/Dockerfile")
-      ssh.sftp_put("#{tmpdir}/Dockerfile", StaticData::DOCKERFILE, StaticData::DEFAULT_USER, host)
+      ssh.sftp_command(StaticData::DEFAULT_USER, host,
+                       %(echo "put #{tmpdir}/Dockerfile #{StaticData::DOCKERFILE}"))
 
-      ssh.sftp_get(StaticData::ENV, "#{tmpdir}/.env", StaticData::DEFAULT_USER, host)
+      ssh.sftp_command(StaticData::DEFAULT_USER, host,
+                       %(echo "get #{StaticData::ENV} #{tmpdir}/.env"))
       overwrite_dot_env("#{tmpdir}/.env")
-      ssh.sftp_put("#{tmpdir}/.env", StaticData::ENV, StaticData::DEFAULT_USER, host)
+      ssh.sftp_command(StaticData::DEFAULT_USER, host,
+                       %(echo "put #{tmpdir}/.env #{StaticData::ENV}"))
     end
   end
 
