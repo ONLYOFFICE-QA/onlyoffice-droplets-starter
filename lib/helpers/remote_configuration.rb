@@ -45,7 +45,6 @@ class RemoteConfiguration
 
   # Method for overwriting configurations
   # to start convert_service_testing project
-  # @return [TrueClass, FalseClass]
   def overwrite_configs
     Dir.mktmpdir do |tmpdir|
       ssh.sftp_get(StaticData::DOCKERFILE, "#{tmpdir}/Dockerfile", StaticData::DEFAULT_USER, host)

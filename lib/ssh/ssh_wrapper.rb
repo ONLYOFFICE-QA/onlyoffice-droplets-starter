@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'English'
 require_relative '../management'
 
 # Class for interaction with net/ssh
@@ -33,22 +32,32 @@ class SshWrapper
   # @param [Object] host_path
   # @param [Object] user
   # @param [Object] ip
-  # @return [Object] recursion
+  # @return [Integer]
   def sftp_get(remote_path, host_path, user, ip)
-    system("echo \"get #{remote_path} #{host_path}\" | sftp #{user}@#{ip}")
-    sleep 5 # Timeout between commands to not be banned by sftp
-    sftp_get(remote_path, host_path, user, ip) unless $CHILD_STATUS.success?
+    5.times do
+      result = system("echo \"get #{remote_path} #{host_path}\" | sftp #{user}@#{ip}")
+      sleep 5 # Timeout between commands to not be banned by sftp
+
+      raise StandardError, 'Failed to retrieve file' if result.nil?
+
+      break if result
+    end
   end
 
   # @param [Object] host_path
   # @param [Object] remote_path
   # @param [Object] user
   # @param [Object] ip
-  # @return [Object] recursion
+  # @return [Integer]
   def sftp_put(host_path, remote_path, user, ip)
-    system("echo \"put #{host_path} #{remote_path}\" | sftp #{user}@#{ip}")
-    sleep 5 # Timeout between commands to not be banned by sftp
-    sftp_put(host_path, remote_path, user, ip) unless $CHILD_STATUS.success?
+    5.times do
+      result = system("echo \"put #{host_path} #{remote_path}\" | sftp #{user}@#{ip}")
+      sleep 5 # Timeout between commands to not be banned by sftp
+
+      raise StandardError, 'Failed to put file' if result.nil?
+
+      break if result
+    end
   end
 
   # A method for strictly executing bash scripts via ssh, taking terminal type into account
