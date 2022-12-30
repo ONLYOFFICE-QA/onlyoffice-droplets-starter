@@ -61,6 +61,22 @@ class RemoteConfiguration
     end
   end
 
+  # Running a script on the server to configure the server
+  # param [String] ip - the server address to configure
+  # param [String] script - Script name from the folder ./lib/bash_scripts/
+  def self.configure_server(ip, script)
+    status = false
+    timeout = 0
+    until status
+      status = system("scp -o StrictHostKeyChecking=no ./lib/bash_scripts/#{script} root@#{ip}:/root/#{script}")
+      sleep(5)
+      timeout += 1
+      return p 'Failed to connect to the server' if timeout == 20
+    end
+    system("ssh root@#{ip} chmod +x /root/#{script}")
+    system("ssh root@#{ip} /root/#{script} > /dev/null 2>&1 &")
+  end
+
   # Configuration, build and run convert service project
   def build_convert_service_testing
     ssh do |channel|

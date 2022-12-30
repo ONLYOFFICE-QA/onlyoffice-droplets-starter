@@ -12,7 +12,7 @@ task :create_droplets, :container_count do |_t, args|
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)
     ip = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
-    `cat ./lib/bash_scripts/script.sh | ssh -o StrictHostKeyChecking=no root@#{ip} /bin/bash`
+    RemoteConfiguration.configure_server(ip, 'script.sh')
     puts('Run one container')
     sleep(5) # Timeout between commands to not be banned by ssh
   end
