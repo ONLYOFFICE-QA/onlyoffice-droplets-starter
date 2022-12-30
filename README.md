@@ -41,13 +41,17 @@ Api documentation [List All SSH Keys](https://docs.digitalocean.com/reference/ap
 
 Or you can use the script for a quick search
 
+For Linux:
+
   ```bash
     #!/bin/bash
 
     DIGITALOCEAN_TOKEN=$(cat ~/.do/access_token)
 
-    # install jq util
+    # install jq util for linux
     sudo apt update && sudo apt install jq
+    # install jq util for macOS
+    brew install jq
 
     curl -X GET \
       -H "Content-Type: application/json" \
