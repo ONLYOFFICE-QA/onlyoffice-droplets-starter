@@ -10,10 +10,10 @@ sysctl vm.swappiness=10
 sysctl vm.vfs_cache_pressure=50
 service ufw stop
 ufw disable
-apt update
-apt install apt-transport-https ca-certificates curl software-properties-common -y
-apt install docker-ce -y
-apt install docker-compose -y
+apt-get update
+apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+apt-get install docker-ce -y
+apt-get install docker-compose -y
 docker run -itd -p 80:80 --name 'droplet_starter' onlyoffice/4testing-documentserver-ee:$DS_VERSION
 sleep 90
 sudo docker exec droplet_starter sudo supervisorctl start ds:example
