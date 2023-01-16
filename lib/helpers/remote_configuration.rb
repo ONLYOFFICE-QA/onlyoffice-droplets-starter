@@ -61,12 +61,24 @@ class RemoteConfiguration
     end
   end
 
+  # Executes ssh command on server
+  # @param [String] user
+  # @param [String] ip
+  # @param [String] command
+  def ssh_command(user, ip, command)
+    20.times do
+      break if system("ssh #{user}@#{ip} #{command}")
+
+      sleep(10)
+    end
+  end
+
   # Running a script on the server to configure the server
   # param [String] script - Script name from the folder ./lib/bash_scripts/
   def configure_server(script)
     ssh.sftp_command(StaticData::DEFAULT_USER, @host, %(echo "put #{StaticData::BASH_SCRIPTS_DIR}/#{script}"))
-    system("ssh root@#{@host} chmod +x /#{StaticData::DEFAULT_USER}/#{script}")
-    system("ssh root@#{@host} /#{StaticData::DEFAULT_USER}/#{script} > /dev/null 2>&1 &")
+    ssh_command(StaticData::DEFAULT_USER, @host, "chmod +x /#{StaticData::DEFAULT_USER}/#{script}")
+    ssh_command(StaticData::DEFAULT_USER, @host, "/#{StaticData::DEFAULT_USER}/#{script} > /dev/null 2>&1 &")
   end
 
   # Configuration, build and run convert service project
