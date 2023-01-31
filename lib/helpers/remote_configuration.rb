@@ -76,9 +76,13 @@ class RemoteConfiguration
   # Running a script on the server to configure the server
   # param [String] script - Script name from the folder ./lib/bash_scripts/
   def configure_server(script)
-    ssh.sftp_command(StaticData::DEFAULT_USER, @host, %(echo "put #{StaticData::BASH_SCRIPTS_DIR}/#{script}"))
-    ssh_command(StaticData::DEFAULT_USER, @host, "chmod +x /#{StaticData::DEFAULT_USER}/#{script}")
-    ssh_command(StaticData::DEFAULT_USER, @host, "/#{StaticData::DEFAULT_USER}/#{script} > /dev/null 2>&1 &")
+    ssh.sftp_command(StaticData::DEFAULT_USER, @host,
+                     %(echo "put #{StaticData::BASH_SCRIPTS_DIR}/#{script} script.sh"))
+    ssh.sftp_command(StaticData::DEFAULT_USER, @host,
+                     %(echo "put #{StaticData::BASH_SCRIPTS_DIR}/myscript.service /lib/systemd/system/"))
+    ssh_command(StaticData::DEFAULT_USER, @host, 'systemctl daemon-reload')
+    ssh_command(StaticData::DEFAULT_USER, @host, 'systemctl enable myscript.service')
+    ssh_command(StaticData::DEFAULT_USER, @host, 'systemctl start myscript.service')
   end
 
   # Configuration, build and run convert service project
