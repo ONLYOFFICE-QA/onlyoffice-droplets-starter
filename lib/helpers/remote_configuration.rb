@@ -76,6 +76,7 @@ class RemoteConfiguration
   # Running the specified service on the server
   # @param [String] service_name
   def run_service_on_server(service_name)
+    logger.info("Run service: #{service_name}")
     ssh_command(StaticData::DEFAULT_USER, @host, 'systemctl daemon-reload')
     ssh_command(StaticData::DEFAULT_USER, @host, "systemctl enable #{service_name}")
     ssh_command(StaticData::DEFAULT_USER, @host, "systemctl start #{service_name}")
@@ -84,6 +85,7 @@ class RemoteConfiguration
   # Running a script on the server to configure the server
   # param [String] script - Script name from the folder ./lib/bash_scripts/
   def configure_server(script)
+    logger.info("Copying script: #{script}")
     ssh.sftp_command(StaticData::DEFAULT_USER, @host,
                      %(echo "put #{StaticData::BASH_SCRIPTS_DIR}/#{script} script.sh"))
     ssh.sftp_command(StaticData::DEFAULT_USER, @host,
