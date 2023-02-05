@@ -5,7 +5,7 @@ require 'json'
 # class with some constants and static data
 class StaticData
   PROJECT_DIR = Dir.pwd.freeze
-  BASH_SCRIPTS_DIR = "#{PROJECT_DIR}/lib/bash_scripts"
+  BASH_SCRIPTS = "#{PROJECT_DIR}/lib/bash_scripts"
   PROJECT_NAME = ''
   DROPLET_NAME_PATTERN = 'droplets-starter'
   DROPLET_REGION = 'nyc3'
