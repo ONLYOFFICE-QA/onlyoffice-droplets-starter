@@ -21,6 +21,12 @@ class RemoteConfiguration
     @ssh ||= SshWrapper.new(host, user, {}, &block)
   end
 
+  # @param [Proc] block Code with instructions for net-sftp gem
+  # @return [SFTPClient]
+  def sftp(&block)
+    @sftp ||= SFTPClient.new(host, user, {}, &block)
+  end
+
   # @return [Object] Returns a new instance of FileManager if doesn't exist
   def f_manager
     @f_manager ||= FileManager.new
@@ -47,18 +53,38 @@ class RemoteConfiguration
   # to start convert_service_testing project
   def overwrite_configs
     Dir.mktmpdir do |tmpdir|
-      ssh.sftp_command(StaticData::DEFAULT_USER, host,
-                       %(echo "get #{StaticData::DOCKERFILE} #{tmpdir}/Dockerfile"))
-      overwrite_dockerfile("#{tmpdir}/Dockerfile")
-      ssh.sftp_command(StaticData::DEFAULT_USER, host,
-                       %(echo "put #{tmpdir}/Dockerfile #{StaticData::DOCKERFILE}"))
-
-      ssh.sftp_command(StaticData::DEFAULT_USER, host,
-                       %(echo "get #{StaticData::ENV} #{tmpdir}/.env"))
-      overwrite_dot_env("#{tmpdir}/.env")
-      ssh.sftp_command(StaticData::DEFAULT_USER, host,
-                       %(echo "put #{tmpdir}/.env #{StaticData::ENV}"))
+      sftp do |channel|
+        sftp.download_file(channel, StaticData::DOCKERFILE.to_s, "#{tmpdir}/Dockerfile")
+        overwrite_dockerfile("#{tmpdir}/Dockerfile")
+        sftp.upload_file(channel, "#{tmpdir}/Dockerfile", StaticData::DOCKERFILE.to_s)
+        sftp.download_file(channel, StaticData::ENV.to_s, "#{tmpdir}/.env")
+        overwrite_dot_env("#{tmpdir}/.env")
+        sftp.upload_file(channel, "#{tmpdir}/.env", StaticData::ENV.to_s)
+      end
     end
+  end
+
+  # Running the specified service on the server
+  # @param [String] service_name Service name for run
+  def run_service_on_server(service_name)
+    logger.info("Run service: #{service_name}")
+    ssh do |channel|
+      ssh.exec_with_logs!(channel, 'systemctl daemon-reload')
+      ssh.exec_with_logs!(channel, "systemctl enable #{service_name}")
+      ssh.exec_with_logs!(channel, "systemctl start #{service_name}")
+    end
+  end
+
+  # Running a script on the server to configure the server
+  # @param [String] script  Script name from the folder ./lib/bash_scripts/
+  # @param [String] service Service name for run script
+  def run_script_on_server(script, service = 'myscript.service')
+    logger.info("Copying script: #{script}")
+    sftp do |channel|
+      sftp.upload_file(channel, "#{StaticData::BASH_SCRIPTS}/#{script}", '/root/script.sh')
+      sftp.upload_file(channel, "#{StaticData::BASH_SCRIPTS}/#{service}", "/lib/systemd/system/#{service}")
+    end
+    run_service_on_server(service)
   end
 
   # Configuration, build and run convert service project

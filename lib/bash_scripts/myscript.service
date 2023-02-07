@@ -1,0 +1,10 @@
+[Unit]
+Description=Custom Bash Script
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bash /root/script.sh
+StandardInput=tty-force
+
+[Install]
+WantedBy=multi-user.target

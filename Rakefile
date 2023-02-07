@@ -12,7 +12,8 @@ task :create_droplets, :container_count do |_t, args|
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)
     ip = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
-    `cat ./lib/bash_scripts/script.sh | ssh -o StrictHostKeyChecking=no root@#{ip} /bin/bash`
+    OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up(timeout: 120)
+    RemoteConfiguration.new(host: ip).run_script_on_server('script.sh')
     puts('Run one container')
     sleep(5) # Timeout between commands to not be banned by ssh
   end
@@ -24,9 +25,9 @@ task :launch, :version do |_t, args|
     droplet_name = digital_ocean_helper.next_loader_name
     digital_ocean_helper.create_droplet(droplet_name)
     digital_ocean_helper.include_in_the_project(droplet_name)
-    host = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
-    OnlyofficeDigitaloceanWrapper::SshChecker.new(host).wait_until_ssh_up
-    RemoteConfiguration.new(host: host,
+    ip = digital_ocean_helper.do_api.get_droplet_ip_by_name(droplet_name)
+    OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up
+    RemoteConfiguration.new(host: ip,
                             version: args[:version].to_s,
                             spec: spec).build_convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh

@@ -14,8 +14,15 @@ class SshWrapper
   # @param [Object] options Options to pass to the underlying SSH client
   # @param [Proc] block Block to execute on the new SSH connection
   # @return [Net::SSH::Connection::Session] Returns a new SSH connection
-  def initialize(host, user, options, &block)
-    @ssh = Net::SSH.start(host, user, options, &block)
+  def initialize(host, user, options, timeout: 30, &block)
+    sleep_between_tries = 10
+    (timeout / sleep_between_tries).times do |try|
+      return @ssh = Net::SSH.start(host, user, options, &block)
+    rescue StandardError
+      logger.info("SSH connection refused on `#{host}` Waiting for #{try * sleep_between_tries} of 30")
+      sleep sleep_between_tries
+    end
+    raise('SSH connection failed')
   end
 
   # Execute a command on the remote host with log to stdout
@@ -28,28 +35,11 @@ class SshWrapper
     end
   end
 
-  # Using interactive sftp commands
-  # without interactive mode.
-  # One command - one ssh connection
-  # @param [Object] command
-  # @param [Object] user
-  # @param [Object] ip
-  # @return [Integer]
-  def sftp_command(user, ip, command)
-    5.times do
-      result = system("#{command} | sftp #{user}@#{ip}")
-
-      raise StandardError, 'Failed to retrieve file' if result.nil?
-
-      result ? break : sleep(20) # Waiting if the error "Connection refused"
-    end
-  end
-
   # A method for strictly executing bash scripts via ssh, taking terminal type into account
   # @option send_data 'export TERM=vt100n'
   # The value of the TERM environmental variable determines what terminal emulation will be used
   # to display characters to your screen.
-  # For Macintoshes and IBM compatibles, "vt100" is usually the correct emulation. For Xterminals, use "xterm".
+  # For Macintosh's and IBM compatibles, "vt100" is usually the correct emulation. For Xterminals, use "xterm".
   # @param [Net::SSH::Connection::Session] session The SSH connection to execute the command on
   # @param [String] script The script to execute
   # @param [String] shell Shell type (bash by default)
