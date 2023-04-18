@@ -40,7 +40,7 @@ GEM
     public_suffix (5.0.1)
     rainbow (3.1.1)
     rake (13.0.6)
-    regexp_parser (2.7.0)
+    regexp_parser (2.8.0)
     resource_kit (0.1.8)
       addressable (>= 2.3.6, < 3.0.0)
     rexml (3.2.5)
