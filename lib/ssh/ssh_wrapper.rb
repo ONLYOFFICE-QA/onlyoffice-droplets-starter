@@ -14,12 +14,12 @@ class SshWrapper
   # @param [Object] options Options to pass to the underlying SSH client
   # @param [Proc] block Block to execute on the new SSH connection
   # @return [Net::SSH::Connection::Session] Returns a new SSH connection
-  def initialize(host, user, options, timeout: 30, &block)
-    sleep_between_tries = 10
+  def initialize(host, user, options, timeout: 200, &block)
+    sleep_between_tries = 15
     (timeout / sleep_between_tries).times do |try|
       return @ssh = Net::SSH.start(host, user, options, &block)
     rescue StandardError
-      logger.info("SSH connection refused on `#{host}` Waiting for #{try * sleep_between_tries} of 30")
+      logger.info("SSH connection refused on `#{host}` Waiting for #{try * sleep_between_tries} of #{timeout}")
       sleep sleep_between_tries
     end
     raise('SSH connection failed')

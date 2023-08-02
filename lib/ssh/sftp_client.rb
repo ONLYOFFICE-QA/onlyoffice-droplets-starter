@@ -12,12 +12,12 @@ class SFTPClient
   # @param [Object] options Options to pass to the underlying SFTP client
   # @param [Proc] block Block to execute on the new SFTP connection
   # @return [Net::SFTP::Connection::Session] Returns a new SFTP connection
-  def initialize(host, user, options, timeout: 30, &block)
-    sleep_between_tries = 10
+  def initialize(host, user, options, timeout: 200, &block)
+    sleep_between_tries = 15
     (timeout / sleep_between_tries).times do |try|
       return @sftp = Net::SFTP.start(host, user, options, &block)
     rescue StandardError
-      logger.info("SFTP connection refused on `#{host}` Waiting for #{try * sleep_between_tries} of 30")
+      logger.info("SFTP connection refused on `#{host}` Waiting for #{try * sleep_between_tries} of #{timeout}")
       sleep sleep_between_tries
     end
     raise('SFTP connection failed')
