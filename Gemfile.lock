@@ -95,7 +95,7 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     thread_safe (0.3.6)
-    unicode-display_width (2.4.2)
+    unicode-display_width (2.5.0)
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
