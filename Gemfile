@@ -9,6 +9,7 @@ gem 'bcrypt_pbkdf'
 # https://bugzilla.redhat.com/show_bug.cgi?id=1747751
 gem 'ed25519'
 
+gem 'concurrent-ruby'
 gem 'net-sftp', '~> 4.0'
 gem 'net-ssh', '>7.0.0'
 gem 'onlyoffice_digitalocean_wrapper'
