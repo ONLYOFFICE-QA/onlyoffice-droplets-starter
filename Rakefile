@@ -38,17 +38,14 @@ end
 desc 'Running a script in multiple containers'
 task :run_array, :script do |_t, args|
   script = args[:script]
-
-  pool = Concurrent::ThreadPool.new(max_threads: config['thread_count'])
   config['ip_array'].each do |ip|
-    pool.post do
+    Thread.new do
       OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up(timeout: 120)
       RemoteConfiguration.new(host: ip).run_script_on_server("#{script}.sh")
       puts("Run script #{script}.sh on #{ip}")
     end
   end
-  pool.shutdown
-  pool.wait_for_termination
+  Thread.list.each(&:join)
 end
 
 desc 'Conversion'
