@@ -42,7 +42,6 @@ class DigitalOceanHelper
                                       size: StaticData::DROPLET_SIZE,
                                       ssh_keys: [StaticData.ssh_key_id])
     @do_api.client.droplets.create(droplet)
-    @do_api.wait_until_droplet_have_status(loader_name)
   end
 
   # @param [Object] droplet_name
