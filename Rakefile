@@ -30,9 +30,8 @@ end
 desc 'Running a script in a container'
 task :run, :ip, :script do |_t, args|
   ip = args[:ip]
-  script = args[:script]
   OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up(timeout: 120)
-  RemoteConfiguration.new(host: ip).run_script_on_server("#{script}.sh")
+  RemoteConfiguration.new(host: ip).run_script_on_server("#{args[:script]}.sh")
   puts('Run one container')
 end
 
