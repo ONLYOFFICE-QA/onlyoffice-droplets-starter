@@ -8,7 +8,7 @@ desc 'Create containers'
 task :create_droplets, :container_count do |_t, args|
   args.with_defaults(container_count: 1)
   container_count = args[:container_count].to_i
-  pool = Concurrent::FixedThreadPool.new(container_count.to_i)
+  pool = Concurrent::FixedThreadPool.new(container_count)
 
   container_count.times do |num|
     droplet_name = digital_ocean_helper.next_loader_name
