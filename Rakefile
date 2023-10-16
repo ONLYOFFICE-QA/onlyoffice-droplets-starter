@@ -2,8 +2,6 @@
 
 require_relative 'lib/management'
 
-config = JSON.load_file(File.join(Dir.pwd, 'config.json'))
-
 desc 'Create containers'
 task :create_droplets, :container_count do |_t, args|
   args.with_defaults(container_count: 1)
@@ -21,7 +19,7 @@ task :create_droplets, :container_count do |_t, args|
       RemoteConfiguration.new(host: ip).run_script_on_server('ds_run.sh')
       puts("Run container #{num}")
     end
-    sleep(config['delay_between_start_droplet']) unless num == container_count - 1
+    sleep(StaticData::CONFIG['delay_between_start_droplet']) unless num == container_count - 1
   end
   pool.shutdown
   pool.wait_for_termination
@@ -40,7 +38,24 @@ task :run_array, :script do |_t, args|
   script = args[:script]
   pool = Concurrent::FixedThreadPool.new(config['ip_array'].length.to_i)
 
-  config['ip_array'].each do |ip|
+  StaticData::CONFIG['ip_array'].each do |ip|
+    pool.post do
+      OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up(timeout: 120)
+      RemoteConfiguration.new(host: ip).run_script_on_server("#{script}.sh")
+      puts("Run script #{script}.sh on #{ip}")
+    end
+  end
+  pool.shutdown
+  pool.wait_for_termination
+end
+
+desc 'Running a script in all containers by droplet name pattern'
+task :run_project_droplets, :script do |_t, args|
+  script = args[:script]
+  ip_array = digital_ocean_helper.get_ip_array
+  pool = Concurrent::FixedThreadPool.new(ip_array.length.to_i)
+
+  ip_array.each do |ip|
     pool.post do
       OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up(timeout: 120)
       RemoteConfiguration.new(host: ip).run_script_on_server("#{script}.sh")
