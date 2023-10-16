@@ -24,6 +24,15 @@ class DigitalOceanHelper
 
   public
 
+  def get_ip_array
+    ip_array = []
+    @do_api.client.droplets.all.each do |droplet|
+      public_network = droplet.networks.to_a.first.find { |net| net.type == 'public' }
+      ip_array << public_network.ip_address if droplet.name.start_with?(StaticData::DROPLET_NAME_PATTERN)
+    end
+    ip_array
+  end
+
   # @return [String] next name of loader
   def next_loader_name
     loaders = loaders_names

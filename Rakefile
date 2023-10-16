@@ -78,3 +78,8 @@ task :launch, :version do |_t, args|
     sleep 5 # Timeout between commands to not be banned by ssh
   end
 end
+
+desc 'Stdout your project droplets ip array'
+task :get_droplets_ip do |_|
+  p digital_ocean_helper.get_ip_array
+end
