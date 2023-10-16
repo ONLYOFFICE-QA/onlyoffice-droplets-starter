@@ -5,15 +5,16 @@ require 'json'
 # class with some constants and static data
 class StaticData
   PROJECT_DIR = Dir.pwd.freeze
-  BASH_SCRIPTS = "#{PROJECT_DIR}/lib/bash_scripts".freeze
+  CONFIG = JSON.load_file(File.join(Dir.pwd, 'config.json'))
+  BASH_SCRIPTS = "#{PROJECT_DIR}/lib/bash_scripts"
   PROJECT_NAME = ''
-  DROPLET_NAME_PATTERN = 'droplets-starter'
-  DROPLET_REGION = 'nyc3'
-  DROPLET_IMAGE = 'docker-20-04'
-  DROPLET_SIZE = 's-1vcpu-1gb'
-  SSH_KEY_ID = ''
+  DROPLET_NAME_PATTERN = "#{CONFIG['DROPLET_NAME_PATTERN']}_#{project_name.sub(' ', '_')}"
+  DROPLET_REGION = CONFIG['DROPLET_REGION']
+  DROPLET_IMAGE = CONFIG['DROPLET_IMAGE']
+  DROPLET_SIZE = CONFIG['DROPLET_SIZE']
+  SSH_KEY_ID = CONFIG['SSH_KEY_ID']
 
-  DEFAULT_USER = 'root'
+  DEFAULT_USER = CONFIG['DEFAULT_USER']
 
   PATH_ARRAY = [
     { dir: '.s3', file: 'key' },
