@@ -21,7 +21,7 @@ task :create_droplets, :container_count do |_t, args|
       RemoteConfiguration.new(host: ip).run_script_on_server('ds_run.sh')
       puts("Run container #{num}")
     end
-    sleep(config['delay_between_threads']) unless num == container_count - 1
+    sleep(config['delay_between_start_droplet']) unless num == container_count - 1
   end
   pool.shutdown
   pool.wait_for_termination
