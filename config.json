@@ -2,7 +2,7 @@
   "delay_between_start_droplet": 5,
   "DROPLET_NAME_PATTERN": "droplets-starter",
   "DROPLET_REGION": "nyc3",
-  "DROPLET_IMAGE": "docker-22-04",
+  "DROPLET_IMAGE": "docker-20-04",
   "DROPLET_SIZE": "s-1vcpu-1gb",
   "DEFAULT_USER": "root",
   "SSH_KEY_ID": "",
