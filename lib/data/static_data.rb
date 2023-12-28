@@ -5,7 +5,7 @@ require 'json'
 # class with some constants and static data
 class StaticData
   PROJECT_DIR = Dir.pwd.freeze
-  BASH_SCRIPTS = "#{PROJECT_DIR}/lib/bash_scripts"
+  BASH_SCRIPTS = "#{PROJECT_DIR}/lib/bash_scripts".freeze
   PROJECT_NAME = ''
   DROPLET_NAME_PATTERN = 'droplets-starter'
   DROPLET_REGION = 'nyc3'
@@ -24,8 +24,8 @@ class StaticData
 
   SPEC_FILES_LIST = JSON.load_file("#{Dir.pwd}/lib/assets/spec_list.json")
 
-  DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile"
-  ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env"
+  DOCKERFILE = "/#{StaticData::DEFAULT_USER}/convert-service-testing/Dockerfile".freeze
+  ENV = "/#{StaticData::DEFAULT_USER}/convert-service-testing/.env".freeze
   SWAP = './lib/bash_scripts/swap.sh'
 
   GIT_CLONE_PROJECT = 'git clone https://github.com/ONLYOFFICE-QA/convert-service-testing.git; echo "project is cloned"'

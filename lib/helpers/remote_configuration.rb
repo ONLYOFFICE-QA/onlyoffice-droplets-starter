@@ -17,14 +17,14 @@ class RemoteConfiguration
 
   # @param [Proc] block Code with instructions for net-ssh gem
   # @return [SshWrapper]
-  def ssh(&block)
-    @ssh ||= SshWrapper.new(host, user, {}, &block)
+  def ssh(&)
+    @ssh ||= SshWrapper.new(host, user, {}, &)
   end
 
   # @param [Proc] block Code with instructions for net-sftp gem
   # @return [SFTPClient]
-  def sftp(&block)
-    @sftp ||= SFTPClient.new(host, user, {}, &block)
+  def sftp(&)
+    @sftp ||= SFTPClient.new(host, user, {}, &)
   end
 
   # @return [Object] Returns a new instance of FileManager if doesn't exist
