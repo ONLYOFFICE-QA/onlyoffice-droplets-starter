@@ -29,7 +29,7 @@ task :launch, :version do |_t, args|
     OnlyofficeDigitaloceanWrapper::SshChecker.new(ip).wait_until_ssh_up
     RemoteConfiguration.new(host: ip,
                             version: args[:version].to_s,
-                            spec: spec).build_convert_service_testing
+                            spec:).build_convert_service_testing
     sleep 5 # Timeout between commands to not be banned by ssh
   end
 end
