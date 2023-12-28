@@ -4,4 +4,4 @@
 
 ### New Features
 
-* Move to `ruby-3.3`
+* Add `ruby-3.3` to CI
