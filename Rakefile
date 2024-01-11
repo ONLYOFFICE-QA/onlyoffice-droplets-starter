@@ -36,7 +36,7 @@ end
 desc 'Running a script in multiple containers'
 task :run_array, :script do |_t, args|
   script = args[:script]
-  pool = Concurrent::FixedThreadPool.new(config['ip_array'].length.to_i)
+  pool = Concurrent::FixedThreadPool.new(StaticData::CONFIG['ip_array'].length.to_i)
 
   StaticData::CONFIG['ip_array'].each do |ip|
     pool.post do
