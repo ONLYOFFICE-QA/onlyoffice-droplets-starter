@@ -35,7 +35,7 @@ GEM
       uri
     net-sftp (4.0.0)
       net-ssh (>= 5.0.0, < 8.0.0)
-    net-ssh (7.2.1)
+    net-ssh (7.2.3)
     net-telnet (0.2.0)
     onlyoffice_digitalocean_wrapper (0.8.0)
       droplet_kit (~> 3)
