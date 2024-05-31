@@ -33,7 +33,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Rspec
-        run: rspec --pattern "spec/**/unit/*_spec.rb"
+        run: bundle exec rspec --pattern "spec/**/unit/*_spec.rb"
 
       - name: RuboCop
         run: bundle exec rubocop
