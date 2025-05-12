@@ -14,7 +14,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    diff-lcs (1.6.0)
+    diff-lcs (1.6.2)
     droplet_kit (3.22.0)
       bigdecimal
       faraday (>= 0.15)
